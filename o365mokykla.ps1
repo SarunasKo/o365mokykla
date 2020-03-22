@@ -77,7 +77,7 @@ Get-MsolAccountSku
 
 
 # Įveskite informaciją apie savo mokyklą, pažymėkite ir įvykdykite kodo eilutes
-$Domeno_vardas = "eportfelis.net"
+$Domeno_vardas = "o365mokykla.lt"
 $Mokslo_metai = "2019-2020"
 $Mokytoju_saraso_failas = ".\o365mokykla_2019-2020_mokytojai.csv" # CSV failas su besimokančių mokinių sąrašu iš mokinių registro 
 $Mokytoju_paskyru_failas = ".\o365mokykla_2019-2020_mokytojai_paskyros.csv" # Paskyrų failas bus sukurtas su laikinaisiais slaptažodžiais pirmajam vartotojų prisijungimui
@@ -120,7 +120,7 @@ foreach ($NaujasMokytojas in $NaujuMokytojuSarasas)
             {
 		        New-MsolUser -UserPrincipalName $NewUserPrincipalName -DisplayName $NewDisplayName -FirstName $NewFirstName -LastName $NewLastName -Title $NewTitle -Office $NewOffice -PreferredLanguage "lt-LT" -UsageLocation "LT" -ForceChangePassword:$true
                 $Slaptazodis = Set-MsolUserPassword -UserPrincipalName $NewUserPrincipalName -ForceChangePassword:$true
-                Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "eportfelis:STANDARDWOFFPACK_STUDENT" # <<< !!! Prieš dvitaškį įrašykite savo mokyklos Office 365 aplinkos ID !!!
+                Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "o365mokykla:STANDARDWOFFPACK_STUDENT" # <<< !!! Prieš dvitaškį įrašykite savo mokyklos Office 365 aplinkos ID !!!
             }
         else
             {
@@ -187,7 +187,7 @@ foreach ($NaujasMokinys in $NaujuMokiniuSarasas)
             {
 		        New-MsolUser -UserPrincipalName $NewUserPrincipalName -DisplayName $NewDisplayName -FirstName $NewFirstName -LastName $NewLastName -Title $NewTitle -Department $NewDepartment -Office $NewOffice -PreferredLanguage "lt-LT" -UsageLocation "LT" -ForceChangePassword:$true
                 $Slaptazodis = Set-MsolUserPassword -UserPrincipalName $NewUserPrincipalName -ForceChangePassword:$true
-                Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "eportfelis:STANDARDWOFFPACK_STUDENT" # <<< !!! Prieš dvitaškį įrašykite savo mokyklos Office 365 aplinkos ID !!!
+                Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "o365mokykla:STANDARDWOFFPACK_STUDENT" # <<< !!! Prieš dvitaškį įrašykite savo mokyklos Office 365 aplinkos ID !!!
             }
         else
             {
