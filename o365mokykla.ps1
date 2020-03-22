@@ -1,4 +1,4 @@
-﻿#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #
 # MIT License
 #
@@ -34,10 +34,10 @@
 #    Sarunas Koncius
 #
 # VERSION:
-# 	 0.7.0 20200321 
+# 	 0.8.0 20200322 
 #
 # MODIFIED:
-#	 2020-03-21
+#	 2020-03-22
 #
 #
 #------------------------------------------------------------------------------
@@ -59,42 +59,117 @@ $UserCredential = Get-Credential
 connect-msolservice -credential $UserCredential
 $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://outlook.office365.com/powershell-liveid/ -Credential $UserCredential -Authentication Basic -AllowRedirection
 Import-PSSession $Session -DisableNameChecking
-Set-Location -Path $Env:USERPROFILE\Desktop # Aktyvus katalogas - darbastalio, CSV failą laikykite ten
+Set-Location -Path $Env:USERPROFILE\Desktop # Darbastalis yra nustatomas aktyviu katalogas - ten galite laikyti CSV failus
 
 
-# Pasižiūrėkite informaciją apie turimas licencijas ir jų kiekius
-# Prieš licencijos pavadinimą iki dvitašio yra rodomas mokyklos Office 365 aplinkos identifikatorius - jį reikės nurodyti 114 eilutėje
+# Paeržiūrėti informaciją apie turimas licencijas ir jų kiekius
+#
+# AccountSkuId                                 ActiveUnits WarningUnits ConsumedUnits
+# ------------                                 ----------- ------------ -------------
+# o365mokykla:STANDARDWOFFPACK_STUDENT         1000000     0            0         
+# o365mokykla:STANDARDWOFFPACK_FACULTY         500000      0            1          
+#
+# !!! SVARBU!
+# !!! Prieš licencijos pavadinimą iki dvitaškio yra rodomas mokyklos Office 365 aplinkos identifikatorius (pavyzdyje - o365mokykla).
+# !!! Savo mokyklos Office 365 aplinkos identifikatorių reikia įrašyti 123 ir 190 eilutėse.
+#
 Get-MsolAccountSku
 
 
 # Įveskite informaciją apie savo mokyklą, pažymėkite ir įvykdykite kodo eilutes
 $Domeno_vardas = "eportfelis.net"
 $Mokslo_metai = "2019-2020"
+$Mokytoju_saraso_failas = ".\o365mokykla_2019-2020_mokytojai.csv" # CSV failas su besimokančių mokinių sąrašu iš mokinių registro 
+$Mokytoju_paskyru_failas = ".\o365mokykla_2019-2020_mokytojai_paskyros.csv" # Paskyrų failas bus sukurtas su laikinaisiais slaptažodžiais pirmajam vartotojų prisijungimui
 $Mokiniu_saraso_failas = ".\o365mokykla_2019-2020_mokiniai.csv" # CSV failas su besimokančių mokinių sąrašu iš mokinių registro 
-$Paskyru_saraso_failas = ".\o365mokykla_2019-2020_paskyros.csv" # Paskyrų failas bus sukurtas su laikinaisiais slaptažodžiais pirmajam vartotojų prisijungimui
+$Mokiniu_paskyru_failas = ".\o365mokykla_2019-2020_mokiniai_paskyros.csv" # Paskyrų failas bus sukurtas su laikinaisiais slaptažodžiais pirmajam vartotojų prisijungimui
 
 
-# Patikrinimas, ar CSV failas su mokinių sąrašu yra tinkamas
-$NaujuMokiniuSarasas = Import-Csv $Mokiniu_saraso_failas -Encoding UTF8
-$NaujuMokiniuSarasas | ft
-
-
-# Turi būti rodomi mokinių sąrašo duomenys trijuose stulpeliuose. Jeigu duomenys matosi viename stulpelyje,
+# Patikrinti, ar CSV failas su mokytojų sąrašu yra tinkamas
+# Turi būti rodomi mokytojų sąrašo duomenys trijuose stulpeliuose. Jeigu duomenys matosi viename stulpelyje,
 # CSV faile skyrybos ženklą kablelį pakeiskite kabliataškiu arba atvirkščiai.
-# Stulpelių pavadinimai turi būti "Pavardė", "Vardas" ir "Klasės/grupės pavadinimas" (be kabučių). 
+# Stulpelių pavadinimai turi būti "Pavardė", "Vardas" ir "Pareigos", bet jų eilės tvarka nėra svarbi. 
 # Pataisykite CSV failą, jeigu stulpelių pavadinimai yra kiti.
-# Pakoregavę CSV failą, grįžkite prie 78-79 eilutės CSV failui patikrinti
+# Pakoregavę CSV failą, grįžkite prie 94-95 eilutės CSV failui patikrinti
+$NaujuMokytojuSarasas = Import-Csv $Mokytoju_saraso_failas -Encoding UTF8
+$NaujuMokytojuSarasas | ft
 
 
-# Mokinių paskyrų sukūrimas
+# Sukurti naujas mokytojų paskyras
 function Remove-StringNonLatinCharacters
 {
     PARAM ([string]$String)
     [Text.Encoding]::ASCII.GetString([Text.Encoding]::GetEncoding("Cyrillic").GetBytes($String))
 }
-Out-File -FilePath $Paskyru_saraso_failas -InputObject "Klasė,Mokinys,VartotojoID,Slaptažodis" -Encoding UTF8
+Out-File -FilePath $Mokytoju_paskyru_failas -InputObject "Mokytojas,VartotojoID,Slaptažodis" -Encoding UTF8
+$NaujuMokytojuSarasas = Import-Csv $Mokytoju_saraso_failas -Encoding UTF8
+foreach ($NaujasMokytojas in $NaujuMokytojuSarasas) {}
+foreach ($NaujasMokytojas in $NaujuMokytojuSarasas)
+	{
+        $NewFirstName = (Get-Culture).textinfo.totitlecase($NaujasMokytojas.Vardas.ToLower())
+        $NewLastName = (Get-Culture).textinfo.totitlecase($NaujasMokytojas.Pavardė.ToLower())
+        $NewTitle = $NaujasMokytojas.Pareigos
+        $NewOffice = $Mokslo_metai
+        If ($NewFirstName.Contains(" ")) { $OnlyFirstName = $NewFirstName.Substring(0, $NewFirstName.IndexOf(" ")) } else { $OnlyFirstName = $NewFirstName }
+        If ($NewLastName.Contains(" ")) { $OnlyLastName = $NewLastName.Substring($NewLastName.LastIndexOf(" ")+1,$NewLastName.Length-$NewLastName.LastIndexOf(" ")-1) } else { $OnlyLastName = $NewLastName }
+        $NewDisplayName = $OnlyFirstName + " " + $OnlyLastName
+        $NewUserPrincipalName = (Remove-StringNonLatinCharacters $OnlyFirstName.ToLower()) + "." + (Remove-StringNonLatinCharacters $OnlyLastName.ToLower()) + "@" + $Domeno_vardas
+        Echo $NewUserPrincipalName
+        $EsamasVartotojas = Get-MsolUser -UserPrincipalName $NewUserPrincipalName -ErrorAction SilentlyContinue
+        If ($EsamasVartotojas -eq $Null)
+            {
+		        New-MsolUser -UserPrincipalName $NewUserPrincipalName -DisplayName $NewDisplayName -FirstName $NewFirstName -LastName $NewLastName -Title $NewTitle -Office $NewOffice -PreferredLanguage "lt-LT" -UsageLocation "LT" -ForceChangePassword:$true
+                $Slaptazodis = Set-MsolUserPassword -UserPrincipalName $NewUserPrincipalName -ForceChangePassword:$true
+                Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "eportfelis:STANDARDWOFFPACK_STUDENT" # <<< !!! Prieš dvitaškį įrašykite savo mokyklos Office 365 aplinkos ID !!!
+            }
+        else
+            {
+                $Slaptazodis = "!!!PasikartojantisVartotojoID!!!"
+            }
+        $Mokytojas = $NewFirstName + " " + $NewLastName
+        $VartotojoID = $NewUserPrincipalName
+		$PrisijungimoInformacija = "$Mokytojas,$VartotojoID,$Slaptazodis"
+        Out-File -FilePath $Mokytoju_paskyru_failas -InputObject $PrisijungimoInformacija -Encoding UTF8 -append
+	}
+
+
+# Nustatyti lietuviškus Office 365 aplinkos ir e. pašto dėžutės parametrus naujoms mokytojų paskyroms
+# Prieš vykdant šį kodo bloką, Office 365 administratoriaus portale įsitikinkite, 
+# kad paskutinėms sukurtoms mokytojų paskyroms jau yra sukurtos e.pašto dėžutės.
+$NaujuMokytojuSarasas = Import-Csv $Mokytoju_paskyru_failas -Encoding UTF8
+$Skaitliukas = 1
+foreach ($NaujasMokytojas In $NaujuMokytojuSarasas)
+	{
+		$Upn = $NaujasMokytojas.VartotojoID
+        Echo $Upn
+		$ActivityMessage = "Prašome palaukti..."
+		$StatusMessage = ("Nustatomi parametrai vartotojui {0} ({1} iš {2})" -f $Upn, $Skaitliukas, @($NaujuMokytojuSarasas).count)
+		$PercentComplete = ($Skaitliukas / @($NaujuMokytojuSarasas).count * 100)
+		Write-Progress -Activity $ActivityMessage -Status $StatusMessage -PercentComplete $PercentComplete
+		set-MailboxRegionalConfiguration -Identity $NaujasMokytojas.VartotojoID -TimeZone "FLE Standard Time" -Language lt-LT –LocalizeDefaultFolderName
+		Start-Sleep -m 500
+		$Skaitliukas++
+	}
+
+
+# Patikrinimas, ar CSV failas su mokinių sąrašu yra tinkamas
+# Turi būti rodomi mokinių sąrašo duomenys trijuose stulpeliuose. Jeigu duomenys matosi viename stulpelyje,
+# CSV faile skyrybos ženklą kablelį pakeiskite kabliataškiu arba atvirkščiai.
+# Stulpelių pavadinimai turi būti "Pavardė", "Vardas" ir "Klasės/grupės pavadinimas", bet jų eilės tvarka nėra svarbi. 
+# Pataisykite CSV failą, jeigu stulpelių pavadinimai yra kiti.
+# Pakoregavę CSV failą, grįžkite prie 161-162 eilutės CSV failui patikrinti
 $NaujuMokiniuSarasas = Import-Csv $Mokiniu_saraso_failas -Encoding UTF8
-foreach ($NaujasMokinys in $NaujuMokiniuSarasas) {}
+$NaujuMokiniuSarasas | ft
+
+
+# Sukurti naujas mokinių paskyras
+function Remove-StringNonLatinCharacters
+{
+    PARAM ([string]$String)
+    [Text.Encoding]::ASCII.GetString([Text.Encoding]::GetEncoding("Cyrillic").GetBytes($String))
+}
+Out-File -FilePath $Mokiniu_paskyru_failas -InputObject "Klasė,Mokinys,VartotojoID,Slaptažodis" -Encoding UTF8
+$NaujuMokiniuSarasas = Import-Csv $Mokiniu_saraso_failas -Encoding UTF8
 foreach ($NaujasMokinys in $NaujuMokiniuSarasas)
 	{
         $NewFirstName = (Get-Culture).textinfo.totitlecase($NaujasMokinys.Vardas.ToLower())
@@ -116,28 +191,30 @@ foreach ($NaujasMokinys in $NaujuMokiniuSarasas)
             }
         else
             {
-                $Slaptazodis = "!!!PasikartojantisUPN!!!"
+                $Slaptazodis = "!!!PasikartojantisVartotojoID!!!"
             }
         $Klase = $NaujasMokinys."Klasės/grupės pavadinimas".ToLower()
         $Mokinys = $NewFirstName + " " + $NewLastName
         $VartotojoID = $NewUserPrincipalName
 		$PrisijungimoInformacija = "$Klase,$Mokinys,$VartotojoID,$Slaptazodis"
-        Out-File -FilePath $Paskyru_saraso_failas -InputObject $PrisijungimoInformacija -Encoding UTF8 -append
+        Out-File -FilePath $Mokiniu_paskyru_failas -InputObject $PrisijungimoInformacija -Encoding UTF8 -append
 	}
 
 
-# Lietuviški Office 365 aplinkos ir pašto dėžutės nustatymai naujiems mokiniams
-$NaujuMokiniuSarasas = Import-Csv $Paskyru_saraso_failas -Encoding UTF8
+# Nustatyti lietuviškus Office 365 aplinkos ir e. pašto dėžutės parametrus naujoms mokinių paskyroms
+# Prieš vykdant šį kodo bloką, Office 365 administratoriaus portale įsitikinkite, 
+# kad paskutinėms sukurtoms mokinių paskyroms jau yra sukurtos e.pašto dėžutės.
+$NaujuMokiniuSarasas = Import-Csv $Mokiniu_paskyru_failas -Encoding UTF8
 $Skaitliukas = 1
-foreach ($Mokinys In $NaujuMokiniuSarasas)
+foreach ($NaujasMokinys In $NaujuMokiniuSarasas)
 	{
-		$Upn = $Mokinys.VartotojoID
+		$Upn = $NaujasMokinys.VartotojoID
         Echo $Upn
 		$ActivityMessage = "Prašome palaukti..."
 		$StatusMessage = ("Nustatomi parametrai vartotojui {0} ({1} iš {2})" -f $Upn, $Skaitliukas, @($NaujuMokiniuSarasas).count)
 		$PercentComplete = ($Skaitliukas / @($NaujuMokiniuSarasas).count * 100)
 		Write-Progress -Activity $ActivityMessage -Status $StatusMessage -PercentComplete $PercentComplete
-		set-MailboxRegionalConfiguration -Identity $Mokinys.VartotojoID -TimeZone "FLE Standard Time" -Language lt-LT –LocalizeDefaultFolderName
+		set-MailboxRegionalConfiguration -Identity $NaujasMokinys.VartotojoID -TimeZone "FLE Standard Time" -Language lt-LT –LocalizeDefaultFolderName
 		Start-Sleep -m 500
 		$Skaitliukas++
 	}
