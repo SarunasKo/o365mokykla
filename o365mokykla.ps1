@@ -120,7 +120,7 @@ foreach ($NaujasMokytojas in $NaujuMokytojuSarasas)
             {
 		        New-MsolUser -UserPrincipalName $NewUserPrincipalName -DisplayName $NewDisplayName -FirstName $NewFirstName -LastName $NewLastName -Title $NewTitle -Office $NewOffice -PreferredLanguage "lt-LT" -UsageLocation "LT" -ForceChangePassword:$true
                 $Slaptazodis = Set-MsolUserPassword -UserPrincipalName $NewUserPrincipalName -ForceChangePassword:$true
-                Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "o365mokykla:STANDARDWOFFPACK_STUDENT" # <<< !!! Prieš dvitaškį įrašykite savo mokyklos Office 365 aplinkos ID !!!
+                Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "o365mokykla:STANDARDWOFFPACK_FACULTY" # <<< !!! Prieš dvitaškį įrašykite savo mokyklos Office 365 aplinkos ID !!!
             }
         else
             {
