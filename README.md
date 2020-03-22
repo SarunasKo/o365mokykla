@@ -1,2 +1,18 @@
 # o365mokykla
-PowerShell script to setup initial environment on Office 365 tenant for secondary school in Lithuania
+ - EN: PowerShell script to setup initial environment on Office 365 tenant for secondary school in Lithuania
+ - LT: PowerShell skriptas, skirtas sukurti pradinę Office 365 aplinką mokyklai, kuri pradeda naudotis šiomis paslaugomis
+
+PowerShell skriptas:
+ - sukuria mokytojų paskyras iš CSV failo, kuris gali būti sukuriamas eksportavus duomenis iš Excel failo;
+ - sukuria mokytojų paskyrų CSV failą su prisijungimo vardais ir laikinaisiais slaptažodžiais;
+ - sukuria mokinių paskyras iš CSV failo, kuris yra gaunamas eksportavus duomenis iš mokinių registro;
+ - sukuria mokinių paskyrų CSV failą su prisijungimo vardais ir laikinaisiais slaptažodžiais;
+ - nustato lietuviškus regiono bei laiko juostos parametrus vartotojų paskyroms ir pašto dėžutėms.
+ 
+ Papildomi failai:
+  - o365mokykla_2019-2020_mokytojai.csv - pavyzdinis mokytojų sąrašo CSV failas;
+  - o365mokykla_2019-2020_mokytojai_paskyros.csv - pavyzdinis sukurtų mokytojų paskyrų CSV failas;
+  - o365mokykla_2019-2020_mokiniai.csv - pavyzdinis mokinių sąrašo CSV failas;
+  - o365mokykla_2019-2020_mokiniai_paskyros.csv - pavyzdinis sukurtų mokinių paskyrų CSV failas;
+  - o365mokykla_Kaip-pirmaji-karta-prisijungti-prie-Office.pptx - PowerPoint pateiktis sukurti filmukui apie pirmąjį prisijungimą.
+  
