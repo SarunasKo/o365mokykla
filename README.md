@@ -20,4 +20,5 @@ PowerShell skriptas:
   - o365mokykla_2019-2020_mokytojai_paskyros.csv - pavyzdinis sukurtų mokytojų paskyrų CSV failas;
   - o365mokykla_2019-2020_mokiniai.csv - pavyzdinis mokinių sąrašo CSV failas;
   - o365mokykla_2019-2020_mokiniai_paskyros.csv - pavyzdinis sukurtų mokinių paskyrų CSV failas;
-  - o365mokykla_Kaip-pirmaji-karta-prisijungti-prie-Office.pptx - PowerPoint pateiktis sukurti filmukui apie pirmąjį prisijungimą.
+  - o365mokykla_00_Kaip-parengti-Office-365-naudojimui-mokykloje.pptx - PowerPoint pateiktis, aprašanti Office 365 aplinkos parengimo eigą;
+  - o365mokykla_05_Kaip-pirmaji-karta-prisijungti-prie-Office.pptx - PowerPoint pateiktis sukurti filmukui apie pirmąjį prisijungimą.
