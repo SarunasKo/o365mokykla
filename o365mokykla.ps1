@@ -1,4 +1,4 @@
-#------------------------------------------------------------------------------
+﻿#------------------------------------------------------------------------------
 #
 # MIT License
 #
@@ -34,7 +34,7 @@
 #    Sarunas Koncius
 #
 # VERSION:
-# 	 0.9.0 20200325
+# 	 0.9.1 20200325
 #
 # MODIFIED:
 #	 2020-03-25
@@ -71,7 +71,7 @@ Set-Location -Path $Env:USERPROFILE\Desktop # Darbastalis yra nustatomas aktyviu
 #
 # !!! SVARBU!
 # !!! Prieš licencijos pavadinimą iki dvitaškio yra rodomas mokyklos Office 365 aplinkos identifikatorius (pavyzdyje - o365mokykla).
-# !!! Savo mokyklos Office 365 aplinkos identifikatorių reikia įrašyti 124 ir 191 eilutėse.
+# !!! Savo mokyklos Office 365 aplinkos identifikatorių reikia įrašyti 123 ir 190 eilutėse.
 #
 Get-MsolAccountSku
 
@@ -83,7 +83,7 @@ $Mokytoju_saraso_failas = ".\o365mokykla_2019-2020_mokytojai.csv" # CSV failas s
 $Mokytoju_paskyru_failas = ".\o365mokykla_2019-2020_mokytojai_paskyros.csv" # Paskyrų failas bus sukurtas su laikinaisiais slaptažodžiais pirmajam vartotojų prisijungimui
 $Mokiniu_saraso_failas = ".\o365mokykla_2019-2020_mokiniai.csv" # CSV failas su besimokančių mokinių sąrašu iš mokinių registro 
 $Mokiniu_paskyru_failas = ".\o365mokykla_2019-2020_mokiniai_paskyros.csv" # Paskyrų failas bus sukurtas su laikinaisiais slaptažodžiais pirmajam vartotojų prisijungimui
-$VisuotinioAdministratoriausSmtpAdresas = "o365.administratorius@o365mokykla.lt"
+$VisuotinioAdministratoriausSmtpAdresas = "o365.administratorius@o365mokykla.lt" # Visuotinio administratoriaus teises turinčios paskyros e. pašto adresas
 
 
 # Patikrinti, ar CSV failas su mokytojų sąrašu yra tinkamas
@@ -104,7 +104,6 @@ function Remove-StringNonLatinCharacters
 }
 Out-File -FilePath $Mokytoju_paskyru_failas -InputObject "Mokytojas,VartotojoID,Slaptažodis" -Encoding UTF8
 $NaujuMokytojuSarasas = Import-Csv $Mokytoju_saraso_failas -Encoding UTF8
-foreach ($NaujasMokytojas in $NaujuMokytojuSarasas) {}
 foreach ($NaujasMokytojas in $NaujuMokytojuSarasas)
 	{
         $NewFirstName = (Get-Culture).textinfo.totitlecase($NaujasMokytojas.Vardas.ToLower())
