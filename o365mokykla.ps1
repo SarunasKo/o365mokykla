@@ -34,10 +34,10 @@
 #    Sarunas Koncius
 #
 # VERSION:
-# 	 0.8.0 20200322 
+# 	 0.9.0 20200325
 #
 # MODIFIED:
-#	 2020-03-22
+#	 2020-03-25
 #
 #
 #------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ Set-Location -Path $Env:USERPROFILE\Desktop # Darbastalis yra nustatomas aktyviu
 #
 # !!! SVARBU!
 # !!! Prieš licencijos pavadinimą iki dvitaškio yra rodomas mokyklos Office 365 aplinkos identifikatorius (pavyzdyje - o365mokykla).
-# !!! Savo mokyklos Office 365 aplinkos identifikatorių reikia įrašyti 123 ir 190 eilutėse.
+# !!! Savo mokyklos Office 365 aplinkos identifikatorių reikia įrašyti 124 ir 191 eilutėse.
 #
 Get-MsolAccountSku
 
@@ -83,6 +83,7 @@ $Mokytoju_saraso_failas = ".\o365mokykla_2019-2020_mokytojai.csv" # CSV failas s
 $Mokytoju_paskyru_failas = ".\o365mokykla_2019-2020_mokytojai_paskyros.csv" # Paskyrų failas bus sukurtas su laikinaisiais slaptažodžiais pirmajam vartotojų prisijungimui
 $Mokiniu_saraso_failas = ".\o365mokykla_2019-2020_mokiniai.csv" # CSV failas su besimokančių mokinių sąrašu iš mokinių registro 
 $Mokiniu_paskyru_failas = ".\o365mokykla_2019-2020_mokiniai_paskyros.csv" # Paskyrų failas bus sukurtas su laikinaisiais slaptažodžiais pirmajam vartotojų prisijungimui
+$VisuotinioAdministratoriausSmtpAdresas = "o365.administratorius@o365mokykla.lt"
 
 
 # Patikrinti, ar CSV failas su mokytojų sąrašu yra tinkamas
@@ -120,7 +121,7 @@ foreach ($NaujasMokytojas in $NaujuMokytojuSarasas)
             {
 		        New-MsolUser -UserPrincipalName $NewUserPrincipalName -DisplayName $NewDisplayName -FirstName $NewFirstName -LastName $NewLastName -Title $NewTitle -Office $NewOffice -PreferredLanguage "lt-LT" -UsageLocation "LT" -ForceChangePassword:$true
                 $Slaptazodis = Set-MsolUserPassword -UserPrincipalName $NewUserPrincipalName -ForceChangePassword:$true
-                Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "o365mokykla:STANDARDWOFFPACK_FACULTY" # <<< !!! Prieš dvitaškį įrašykite savo mokyklos Office 365 aplinkos ID !!!
+                Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "o365mokykla:STANDARDWOFFPACK_FACULTY" # <<< !!! Vietoje o365mokykla įrašykite savo mokyklos Office 365 aplinkos ID, kurį parodo Get-MsolAccountSku komanda !!!
             }
         else
             {
@@ -136,17 +137,17 @@ foreach ($NaujasMokytojas in $NaujuMokytojuSarasas)
 # Nustatyti lietuviškus Office 365 aplinkos ir e. pašto dėžutės parametrus naujoms mokytojų paskyroms
 # Prieš vykdant šį kodo bloką, Office 365 administratoriaus portale įsitikinkite, 
 # kad paskutinėms sukurtoms mokytojų paskyroms jau yra sukurtos e.pašto dėžutės.
-$NaujuMokytojuSarasas = Import-Csv $Mokytoju_paskyru_failas -Encoding UTF8
+$NaujosMokytojuPaskyros = Import-Csv $Mokytoju_paskyru_failas -Encoding UTF8
 $Skaitliukas = 1
-foreach ($NaujasMokytojas In $NaujuMokytojuSarasas)
+foreach ($NaujaMokytojoPaskyra In $NaujosMokytojuPaskyros)
 	{
-		$Upn = $NaujasMokytojas.VartotojoID
+		$Upn = $NaujaMokytojoPaskyra.VartotojoID
         Echo $Upn
 		$ActivityMessage = "Prašome palaukti..."
-		$StatusMessage = ("Nustatomi parametrai vartotojui {0} ({1} iš {2})" -f $Upn, $Skaitliukas, @($NaujuMokytojuSarasas).count)
-		$PercentComplete = ($Skaitliukas / @($NaujuMokytojuSarasas).count * 100)
+		$StatusMessage = ("Nustatomi parametrai vartotojui {0} ({1} iš {2})" -f $Upn, $Skaitliukas, @($NaujosMokytojuPaskyros).count)
+		$PercentComplete = ($Skaitliukas / @($NaujosMokytojuPaskyros).count * 100)
 		Write-Progress -Activity $ActivityMessage -Status $StatusMessage -PercentComplete $PercentComplete
-		set-MailboxRegionalConfiguration -Identity $NaujasMokytojas.VartotojoID -TimeZone "FLE Standard Time" -Language lt-LT –LocalizeDefaultFolderName
+		set-MailboxRegionalConfiguration -Identity $NaujaMokytojoPaskyra.VartotojoID -TimeZone "FLE Standard Time" -Language lt-LT –LocalizeDefaultFolderName
 		Start-Sleep -m 500
 		$Skaitliukas++
 	}
@@ -187,7 +188,7 @@ foreach ($NaujasMokinys in $NaujuMokiniuSarasas)
             {
 		        New-MsolUser -UserPrincipalName $NewUserPrincipalName -DisplayName $NewDisplayName -FirstName $NewFirstName -LastName $NewLastName -Title $NewTitle -Department $NewDepartment -Office $NewOffice -PreferredLanguage "lt-LT" -UsageLocation "LT" -ForceChangePassword:$true
                 $Slaptazodis = Set-MsolUserPassword -UserPrincipalName $NewUserPrincipalName -ForceChangePassword:$true
-                Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "o365mokykla:STANDARDWOFFPACK_STUDENT" # <<< !!! Prieš dvitaškį įrašykite savo mokyklos Office 365 aplinkos ID !!!
+                Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "o365mokykla:STANDARDWOFFPACK_STUDENT" # <<< !!! Vietoje o365mokykla įrašykite savo mokyklos Office 365 aplinkos ID, kurį parodo Get-MsolAccountSku komanda !!!
             }
         else
             {
@@ -204,20 +205,90 @@ foreach ($NaujasMokinys in $NaujuMokiniuSarasas)
 # Nustatyti lietuviškus Office 365 aplinkos ir e. pašto dėžutės parametrus naujoms mokinių paskyroms
 # Prieš vykdant šį kodo bloką, Office 365 administratoriaus portale įsitikinkite, 
 # kad paskutinėms sukurtoms mokinių paskyroms jau yra sukurtos e.pašto dėžutės.
-$NaujuMokiniuSarasas = Import-Csv $Mokiniu_paskyru_failas -Encoding UTF8
+$NaujosMokiniuPaskyros = Import-Csv $Mokiniu_paskyru_failas -Encoding UTF8
 $Skaitliukas = 1
-foreach ($NaujasMokinys In $NaujuMokiniuSarasas)
+foreach ($NaujaMokinioPaskyra In $NaujosMokiniuPaskyros)
 	{
-		$Upn = $NaujasMokinys.VartotojoID
+		$Upn = $NaujaMokinioPaskyra.VartotojoID
         Echo $Upn
 		$ActivityMessage = "Prašome palaukti..."
-		$StatusMessage = ("Nustatomi parametrai vartotojui {0} ({1} iš {2})" -f $Upn, $Skaitliukas, @($NaujuMokiniuSarasas).count)
-		$PercentComplete = ($Skaitliukas / @($NaujuMokiniuSarasas).count * 100)
+		$StatusMessage = ("Nustatomi parametrai vartotojui {0} ({1} iš {2})" -f $Upn, $Skaitliukas, @($NaujosMokiniuPaskyros).count)
+		$PercentComplete = ($Skaitliukas / @($NaujosMokiniuPaskyros).count * 100)
 		Write-Progress -Activity $ActivityMessage -Status $StatusMessage -PercentComplete $PercentComplete
-		set-MailboxRegionalConfiguration -Identity $NaujasMokinys.VartotojoID -TimeZone "FLE Standard Time" -Language lt-LT –LocalizeDefaultFolderName
+		set-MailboxRegionalConfiguration -Identity $NaujaMokinioPaskyra.VartotojoID -TimeZone "FLE Standard Time" -Language lt-LT –LocalizeDefaultFolderName
 		Start-Sleep -m 500
 		$Skaitliukas++
 	}
+
+
+# Išjungti Focused Inbox naudojimą Office 365 aplinkoje
+Set-OrganizationConfig -FocusedInboxOn $false
+
+
+# Sukurti saugos grupę "Visi mokytojai"
+$GrupesPilnasPavadinimas = "Visi mokytojai"
+$GrupesTrumpasPavadinimas = "visi.mokytojai"
+$GrupesSmtpAdresas = $GrupesTrumpasPavadinimas + "@" + $Domeno_vardas
+New-DistributionGroup -Name $GrupesPilnasPavadinimas -Type Security -DisplayName $GrupesPilnasPavadinimas -Alias $GrupesTrumpasPavadinimas -PrimarySmtpAddress $GrupesSmtpAdresas -MemberJoinRestriction ApprovalRequired -Notes $GrupesPilnasPavadinimas
+Set-DistributionGroup -Identity $GrupesSmtpAdresas -AcceptMessagesOnlyFrom $VisuotinioAdministratoriausSmtpAdresas -RequireSenderAuthenticationEnabled $false
+Set-DistributionGroup -Identity $GrupesSmtpAdresas -AcceptMessagesOnlyFromDLMembers $GrupesSmtpAdresas
+Set-DistributionGroup -Identity $GrupesSmtpAdresas -AcceptMessagesOnlyFromSendersOrMembers $VisuotinioAdministratoriausSmtpAdresas, $GrupesSmtpAdresas
+$GrupesVisiMokytojaiSmtpAdresas = $GrupesSmtpAdresas
+
+
+# Įtraukti mokytojų paskyras į saugos grupę "Visi mokytojai"
+$VisosMokytojuPaskyros = Get-MsolUser -All | Where-Object {$_.Licenses.AccountSKUid -like "*STANDARDWOFFPACK_FACULTY"} | Select UserPrincipalName
+$VisosMokytojuPaskyros | foreach { Add-DistributionGroupMember -Identity $GrupesVisiMokytojaiSmtpAdresas -Member $_.UserPrincipalName -Confirm:$false }
+
+
+# Sukurti saugos grupę Visi mokiniai
+$GrupesPilnasPavadinimas = "Visi mokiniai"
+$GrupesTrumpasPavadinimas = "visi.mokiniai"
+$GrupesSmtpAdresas = $GrupesTrumpasPavadinimas + "@" + $Domeno_vardas
+New-DistributionGroup -Name $GrupesPilnasPavadinimas -Type Security -DisplayName $GrupesPilnasPavadinimas -Alias $GrupesTrumpasPavadinimas -PrimarySmtpAddress $GrupesSmtpAdresas -MemberJoinRestriction ApprovalRequired -Notes $GrupesPilnasPavadinimas
+Set-DistributionGroup -Identity $GrupesSmtpAdresas -AcceptMessagesOnlyFrom $VisuotinioAdministratoriausSmtpAdresas -RequireSenderAuthenticationEnabled $false
+Set-DistributionGroup -Identity $GrupesSmtpAdresas -AcceptMessagesOnlyFromDLMembers $GrupesVisiMokytojaiSmtpAdresas
+Set-DistributionGroup -Identity $GrupesSmtpAdresas -AcceptMessagesOnlyFromSendersOrMembers $VisuotinioAdministratoriausSmtpAdresas, $GrupesVisiMokytojaiSmtpAdresas
+$GrupesVisiMokiniaiSmtpAdresas = $GrupesSmtpAdresas
+
+
+# Sukurti saugos grupę Visa mokykla
+$GrupesPilnasPavadinimas = "Visa mokykla"
+$GrupesTrumpasPavadinimas = "visa.mokykla"
+$GrupesSmtpAdresas = $GrupesTrumpasPavadinimas + "@" + $Domeno_vardas
+New-DistributionGroup -Name $GrupesPilnasPavadinimas -Type Security -DisplayName $GrupesPilnasPavadinimas -Alias $GrupesTrumpasPavadinimas -PrimarySmtpAddress $GrupesSmtpAdresas -MemberJoinRestriction ApprovalRequired -Notes $GrupesPilnasPavadinimas
+Set-DistributionGroup -Identity $GrupesSmtpAdresas -AcceptMessagesOnlyFrom $VisuotinioAdministratoriausSmtpAdresas -RequireSenderAuthenticationEnabled $false
+Set-DistributionGroup -Identity $GrupesSmtpAdresas -AcceptMessagesOnlyFromDLMembers $GrupesVisiMokytojaiSmtpAdresas
+Set-DistributionGroup -Identity $GrupesSmtpAdresas -AcceptMessagesOnlyFromSendersOrMembers $VisuotinioAdministratoriausSmtpAdresas, $GrupesVisiMokytojaiSmtpAdresas
+Update-DistributionGroupMember -Identity $GrupesSmtpAdresas -Members $GrupesVisiMokytojaiSmtpAdresas, $GrupesVisiMokiniaiSmtpAdresas -Confirm:$false
+
+
+# Sukurti saugos grupes klasėms
+$KlasiuSarasas = Get-MsolUser -All | Where-Object { $_.Licenses.AccountSKUid -like "*STANDARDWOFFPACK_STUDENT" -and $_.Department.Length -gt 0} | select Department | Sort-Object Department -Unique
+foreach ($Klase in $KlasiuSarasas)
+    {
+        $KlasesPilnasPavadinimas = $Klase.Department
+        $KlasesTrumpasPavadinimas = $KlasesPilnasPavadinimas.Substring(0, $KlasesPilnasPavadinimas.IndexOf(" "))
+        $KlasesSmtpAdresas = $KlasesTrumpasPavadinimas + "@" + $Domeno_vardas
+        New-DistributionGroup -Name $KlasesPilnasPavadinimas -Type Security -DisplayName $KlasesPilnasPavadinimas -Alias $KlasesTrumpasPavadinimas -PrimarySmtpAddress $KlasesSmtpAdresas -MemberJoinRestriction ApprovalRequired -Notes $KlasesPilnasPavadinimas
+        Set-DistributionGroup -Identity $KlasesSmtpAdresas -AcceptMessagesOnlyFrom $VisuotinioAdministratoriausSmtpAdresas -RequireSenderAuthenticationEnabled $false
+        Set-DistributionGroup -Identity $KlasesSmtpAdresas -AcceptMessagesOnlyFromDLMembers $KlasesSmtpAdresas, $GrupesVisiMokytojaiSmtpAdresas
+        Set-DistributionGroup -Identity $KlasesSmtpAdresas -AcceptMessagesOnlyFromSendersOrMembers $KlasesSmtpAdresas, $VisuotinioAdministratoriausSmtpAdresas, $GrupesVisiMokytojaiSmtpAdresas
+    }
+
+
+# Įtraukti mokinių paskyras į klasių saugos grupes
+$VisuMokiniuSarasas = Get-MsolUser -All | Where-Object { $_.Licenses.AccountSKUid -like "*STANDARDWOFFPACK_STUDENT" }
+$KlasiuSarasas = Get-MsolUser -All | Where-Object { $_.Licenses.AccountSKUid -like "*STANDARDWOFFPACK_STUDENT" -and $_.Department.Length -gt 0} | select Department | Sort-Object Department -Unique
+foreach ($KlasesPaskyra in $KlasiuSarasas)
+    {
+        $KlasesPilnasPavadinimas = $KlasesPaskyra.Department
+        $KlasesTrumpasPavadinimas = $KlasesPilnasPavadinimas.Substring(0, $KlasesPilnasPavadinimas.IndexOf(" "))
+        $KlasesSmtpAdresas = $KlasesTrumpasPavadinimas + "@" + $Domeno_vardas
+        echo $KlasesSmtpAdresas
+        $KlasesMokiniai = $VisuMokiniuSarasas | Where-Object { $_.Department -eq $KlasesPilnasPavadinimas } | Select UserPrincipalName
+        $KlasesMokiniai | foreach { Add-DistributionGroupMember -Identity $KlasesSmtpAdresas -Member $_.UserPrincipalName -Confirm:$false }
+    }
 
 
 # -----------------------------------------------------------------------------
