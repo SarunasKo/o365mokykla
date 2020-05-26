@@ -1,6 +1,6 @@
 # o365mokykla
- - EN: PowerShell script to setup initial environment on Office 365 tenant for secondary school in Lithuania
  - LT: PowerShell skriptas, skirtas sukurti pradinę Office 365 aplinką mokyklai, kuri pradeda naudotis šiomis paslaugomis
+ - EN: PowerShell script to setup initial environment on Office 365 tenant for secondary school in Lithuania
 
 PowerShell skriptas:
  - sukuria mokytojų paskyras iš CSV failo, kuris gali būti sukuriamas eksportavus duomenis iš Excel failo;
