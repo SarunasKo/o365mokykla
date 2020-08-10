@@ -1,8 +1,14 @@
-# o365mokykla
- - EN: PowerShell script to setup initial environment on Office 365 tenant for secondary school in Lithuania
- - LT: PowerShell skriptas, skirtas sukurti pradinę Office 365 aplinką mokyklai, kuri pradeda naudotis šiomis paslaugomis
-
-PowerShell skriptas:
+ # o365mokykla-nmm.ps1
+ PowerShell skriptas, skirtas atnaujinti Office 365 mokytojų, mokinių ir grupių paskyras naujiems mokslo metams:
+  - eksportuoja esamas mokytojų paskyras į CSV failą, kad jas būtų galima atnaujinti naudojant Excel programą;
+  - importuoja atnaujintą mokytojų paskyrų informaciją iš CSV failo į Office 365 aplinką;
+  - eksportuoja esamas mokinių paskyras į CSV failą, kad jas būtų galima atnaujinti naudojant Excel programą;
+  - importuoja atnaujintą mokinių paskyrų informaciją iš CSV failo į Office 365 aplinką;
+  - eksportuoja esamas saugos grupių su įgalintu e. paštu paskyras į CSV failą, kad jas būtų galima atnaujinti naudojant Excel programą;
+  - importuoja atnaujintą saugos grupių paskyrų informaciją iš CSV failo į Office 365 aplinką.
+ 
+# o365mokykla.ps1
+PowerShell skriptas, skirtas sukurti pradinę Office 365 aplinką mokyklai, kuri pradeda naudotis šiomis paslaugomis:
  - sukuria mokytojų paskyras iš CSV failo, kuris gali būti sukuriamas eksportavus duomenis iš Excel failo;
  - sukuria mokytojų paskyrų CSV failą su prisijungimo vardais ir laikinaisiais slaptažodžiais;
  - sukuria mokinių paskyras iš CSV failo, kuris yra gaunamas eksportavus duomenis iš mokinių registro;
@@ -15,7 +21,7 @@ PowerShell skriptas:
  - sukuria saugos grupę su įgalinti e. paštu kiekvienai klasei ir į narius įtraukia tos klasės mokinius;
  - suteikia teises mokytojams siųsti laiškus visoms grupėms, o mokiniams - tik savo klasės grupei.
  
- Papildomi failai:
+ # Papildomi failai:
   - o365mokykla_2019-2020_mokytojai.csv - pavyzdinis mokytojų sąrašo CSV failas;
   - o365mokykla_2019-2020_mokytojai_paskyros.csv - pavyzdinis sukurtų mokytojų paskyrų CSV failas;
   - o365mokykla_2019-2020_mokiniai.csv - pavyzdinis mokinių sąrašo CSV failas;
