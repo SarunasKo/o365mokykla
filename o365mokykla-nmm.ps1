@@ -1,4 +1,4 @@
-﻿#------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------
 #
 # MIT License
 #
@@ -194,10 +194,10 @@ $DabartinisMokytojuSarasas |
 # Atnaujinkite mokytojų paskyrų duomenis, atlikdami šiuos žingsnius:
 #
 #   1. Naudodami Excel programą atidarykite PowerShell skripto sukurtą CSV failą, kurio pavadinimas yra nurodytas
-#      skripto kintamajame $Pradinis_mokytoju_paskyru_failas (xx eilutė).
+#      skripto kintamajame $Pradinis_mokytoju_paskyru_failas (155 eilutė).
 #
 #   2. Išsaugokite CSV failą nauju vardu, kurį nurodėte atnaujintų paskyrų failo kintamajame
-#      $Atnaujintas_mokytoju_paskyru_failas (xx eilutėje).
+#      $Atnaujintas_mokytoju_paskyru_failas (158 eilutėje).
 #
 #   3. Ištrinkite pirmąją duomenų eilutę, prasidedančią simboliais "#TYPE", kad anglų kalba nurodyti stulpelių
 #      pavadinimai atsirastų pirmoje eilutėje.
@@ -208,10 +208,10 @@ $DabartinisMokytojuSarasas |
 #      stulpelį "UserPrincipalName".
 #
 #   6. Visoms mokytojų paskyroms stulpelyje "Office" įrašykite naujuosius mokslo metus, kurie yra įrašyti skripto
-#      kintamajame $Naujieji_mokslo_metai (xx eilutėje).
+#      kintamajame $Naujieji_mokslo_metai (152 eilutėje).
 #
 #   7. Paskyroms tų mokytojų, kurie nebedirbs mokykloje naujaisiais mokslo metais, "Office" stulpelyje mokslo metus
-#      pakeiskite į praėjusius, kurie įrašyti skripto kintamajame $Ankstesnieji_mokslo_metai (xx eilutė).
+#      pakeiskite į praėjusius, kurie įrašyti skripto kintamajame $Ankstesnieji_mokslo_metai (149 eilutė).
 #
 #   8. Išsaugokite CSV faile atliktus pakeitimus.
 
@@ -265,10 +265,10 @@ $DabartinisMokiniuSarasas |
 # Atnaujinkite mokinių paskyrų duomenis, atlikdami šiuos žingsnius:
 #
 #   1. Naudodami Excel programą atidarykite PowerShell skripto sukurtą CSV failą, kurio pavadinimas yra nurodytas
-#      skripto kintamajame $Pradinis_mokiniu_paskyru_failas.
+#      skripto kintamajame $Pradinis_mokiniu_paskyru_failas (161 eilutėje).
 #
 #   2. Išsaugokite CSV failą nauju vardu, kurį nurodėte atnaujintų paskyrų failo kintamajame
-#      $Atnaujintas_mokiniu_paskyru_failas (xx eilutėje).
+#      $Atnaujintas_mokiniu_paskyru_failas (164 eilutėje).
 #
 #   3. Ištrinkite pirmąją duomenų eilutę, parasidedančią simboliais "#TYPE", kad anglų kalba nurodyti stulpelių
 #      pavadinimai atsirastų pirmoje eilutėje.
@@ -285,10 +285,10 @@ $DabartinisMokiniuSarasas |
 #      stulpelį "UserPrincipalName".
 #
 #   8. Visoms mokinių paskyroms stulpelyje "Office" įrašykite naujuosius mokslo metus, kurie yra įrašyti skripto
-#      kintamajame $Naujieji_mokslo_metai (xx eilutėje).
+#      kintamajame $Naujieji_mokslo_metai (152 eilutėje).
 #
 #   9. Paskyroms tų mokinių, kurie nebesimokys mokykloje naujaisiais mokslo metais, "Office" stulpelyje mokslo
-#      metus pakeiskite į praėjusius, kurie įrašyti skripto kintamajame $Ankstesnieji_mokslo_metai.
+#      metus pakeiskite į praėjusius, kurie įrašyti skripto kintamajame $Ankstesnieji_mokslo_metai (149 eilutėje).
 #
 #   10. Išsaugokite CSV faile atliktus pakeitimus.
 
@@ -342,10 +342,10 @@ Get-DistributionGroup -ResultSize unlimited -Filter "RecipientTypeDetails -eq 'M
 # Atnaujinkite mokinių paskyrų duomenis, atlikdami šiuos žingsnius:
 #
 #   1. Naudodami Excel programą atidarykite PowerShell skripto sukurtą CSV failą, kurio pavadinimas yra nurodytas
-#      skripto kintamajame $Pradinis_grupiu_saraso_failas (xxx eilutėje).
+#      skripto kintamajame $Pradinis_grupiu_saraso_failas (167 eilutėje).
 #
 #   2. Išsaugokite CSV failą nauju vardu, kurį nurodėte atnaujintų paskyrų failo kintamajame
-#      $Atnaujintas_grupiu_saraso_failas (xxx eilutėje).
+#      $Atnaujintas_grupiu_saraso_failas (170 eilutėje).
 #
 #   3. Ištrinkite pirmąją duomenų eilutę, parasidedančią simboliais "#TYPE", kad anglų kalba nurodyti stulpelių
 #      pavadinimai atsirastų pirmoje eilutėje.
