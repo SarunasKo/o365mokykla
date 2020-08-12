@@ -94,7 +94,7 @@ $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri ht
 #Importuoti Exchange Online valdymo sesiją
 Import-PSSession $Session -DisableNameChecking
 # Aktyviu katalogu nustatyti darbastalį, kad jame būtų galima patogiai rasti ir saugoti CSV failus
-Set-Location -Path $Env:USERPROFILE\OneDrive\Desktop
+Set-Location -Path $Env:USERPROFILE\Desktop
 
 
 #------------------------------------------------------------------------------------------------------------------
