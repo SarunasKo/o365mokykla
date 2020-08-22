@@ -104,7 +104,7 @@ Set-Location -Path $Env:USERPROFILE\OneDrive\Desktop
 #------------------------------------------------------------------------------------------------------------------
 #
 # Žingsnis 2: peržiūrėti turimas licencijas, rasti savo Office 365 aplinkos identifikatorių ir jį įrašyti šio
-# skripto kode eilutės xxx, xxx, xxx ir xxx.
+# skripto kode eilutėse 313 ir 494.
 #
 # Šį veiksmą reikia atlikti vieną kartą, pritaikant skriptą savo mokyklos Office 365 aplinkai.
 #
@@ -114,8 +114,8 @@ Set-Location -Path $Env:USERPROFILE\OneDrive\Desktop
 #
 # AccountSkuId                                 ActiveUnits WarningUnits ConsumedUnits
 # ------------                                 ----------- ------------ -------------
-# o365mokykla3:STANDARDWOFFPACK_STUDENT         1000000     0            0         
-# o365mokykla3:STANDARDWOFFPACK_FACULTY         500000      0            1          
+# o365mokykla:STANDARDWOFFPACK_STUDENT         1000000     0            0         
+# o365mokykla:STANDARDWOFFPACK_FACULTY         500000      0            1          
 #
 # Stulpelyje AccountSkuId prieš licencijos pavadinimą iki dvitaškio yra rodomas mokyklos Office 365 aplinkos
 # identifikatorius. Šiame pavyzdyje matomas Office 365 aplinkos identifikatorius yra "o365mokykla" (be kabučių).
@@ -127,7 +127,7 @@ Set-Location -Path $Env:USERPROFILE\OneDrive\Desktop
 Get-MsolAccountSku
 
 # !!! SVARBU!
-# !!! Savo mokyklos Office 365 aplinkos identifikatorių reikia įrašyti šio skripto eilutėse: 181 ir 253.
+# !!! Savo mokyklos Office 365 aplinkos identifikatorių reikia įrašyti šio skripto eilutėse: 313 ir 494.
 
 
 #------------------------------------------------------------------------------------------------------------------
@@ -196,9 +196,7 @@ $Atnaujintas_grupiu_saraso_failas    = ".\o365mokykla_2020-2021_grupes_atnaujint
 #------------------------------------------------------------------------------------------------------------------
 
 # Atrinkti mokytojų paskyras pagal paskyroms priskirtą licenciją iš Office 365 aplinkos
-$DabartinisMokytojuSarasas = Get-MsolUser -All | Where-Object { $_.Licenses.AccountSKUid -eq "o365mokykla3:STANDARDWOFFPACK_FACULTY" }
-# !!! ----------------------------------------------------------------------------------------^^^^^^^^^^^------------------ !!!
-# !!! Vietoje o365mokykla įrašykite savo mokyklos Office 365 aplinkos ID, kurį parodo Get-MsolAccountSku komanda            !!!
+$DabartinisMokytojuSarasas = Get-MsolUser -All | Where-Object { $_.Licenses.AccountSKUid -like "*STANDARDWOFFPACK_FACULTY*" }
 
 # Eksportuoti atrinktų mokytojų paskyrų informaciją į CSV failą
 $DabartinisMokytojuSarasas | Select UserPrincipalName, DisplayName, FirstName, LastName, Title, Department, City, Office | Export-CSV $Pradinis_mokytoju_paskyru_failas -Encoding UTF8
@@ -213,10 +211,10 @@ $DabartinisMokytojuSarasas | Select UserPrincipalName, DisplayName, FirstName, L
 # Atnaujinkite mokytojų paskyrų duomenis, atlikdami šiuos žingsnius:
 #
 #   1. Naudodami Excel programą atidarykite PowerShell skripto sukurtą CSV failą, kurio pavadinimas yra nurodytas
-#      skripto kintamajame $Pradinis_mokytoju_paskyru_failas (xx eilutė).
+#      skripto kintamajame $Pradinis_mokytoju_paskyru_failas (162 skripto eilutėje).
 #
 #   2. Išsaugokite CSV failą nauju vardu, kurį nurodėte atnaujintų paskyrų failo kintamajame
-#      $Atnaujintas_mokytoju_paskyru_failas (xx eilutėje).
+#      $Atnaujintas_mokytoju_paskyru_failas (165 skripto eilutėje).
 #
 #   3. Ištrinkite pirmąją duomenų eilutę, prasidedančią simboliais "#TYPE", kad anglų kalba nurodyti stulpelių
 #      pavadinimai atsirastų pirmoje eilutėje.
@@ -227,10 +225,10 @@ $DabartinisMokytojuSarasas | Select UserPrincipalName, DisplayName, FirstName, L
 #      stulpelį "UserPrincipalName".
 #
 #   6. Visoms mokytojų paskyroms stulpelyje "Office" įrašykite naujuosius mokslo metus, kurie yra įrašyti skripto
-#      kintamajame $Naujieji_mokslo_metai (xx eilutėje).
+#      kintamajame $Naujieji_mokslo_metai (159 skripto eilutėje).
 #
 #   7. Paskyroms tų mokytojų, kurie nebedirbs mokykloje naujaisiais mokslo metais, "Office" stulpelyje mokslo metus
-#      pakeiskite į praėjusius, kurie įrašyti skripto kintamajame $Ankstesnieji_mokslo_metai (xx eilutė).
+#      pakeiskite į praėjusius, kurie įrašyti skripto kintamajame $Ankstesnieji_mokslo_metai (156 skripto eilutėje).
 #
 #   8. Išsaugokite CSV faile atliktus pakeitimus.
 
@@ -273,7 +271,7 @@ $AtnaujintasMokytojuSarasas | foreach {if ($_.Office -ne $Naujieji_mokslo_metai 
 # Įvykdžius kodą turi būti rodomi mokytojų sąrašo duomenys trijuose stulpeliuose. Jeigu duomenys matosi viename 
 # stulpelyje, CSV faile skyrybos ženklą kablelį pakeiskite kabliataškiu arba atvirkščiai. Stulpelių pavadinimai
 # turi būti "Pavardė", "Vardas" ir "Pareigos", bet jų eilės tvarka nėra svarbi. Pataisykite CSV failą, jeigu
-# stulpelių pavadinimai yra kiti. Pakoregavę CSV failą, grįžkite prie xxx-xxx eilutės CSV failui patikrinti.
+# stulpelių pavadinimai yra kiti. Pakoregavę CSV failą, grįžkite prie 275 skripto eilutės CSV failui patikrinti.
 $NaujuMokytojuSarasas = Import-Csv $Nauju_mokytoju_saraso_failas -Encoding UTF8
 $NaujuMokytojuSarasas | ft
 
@@ -312,7 +310,7 @@ foreach ($NaujasMokytojas in $NaujuMokytojuSarasas) {
     If ($EsamasVartotojas -eq $Null) {
 		New-MsolUser -UserPrincipalName $NewUserPrincipalName -DisplayName $NewDisplayName -FirstName $NewFirstName -LastName $NewLastName -Title $NewTitle -Office $NewOffice -PreferredLanguage "lt-LT" -UsageLocation "LT" -ForceChangePassword:$true
         $Slaptazodis = Set-MsolUserPassword -UserPrincipalName $NewUserPrincipalName -ForceChangePassword:$true
-        Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "o365mokykla3:STANDARDWOFFPACK_FACULTY"
+        Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "o365mokykla:STANDARDWOFFPACK_FACULTY"
 # !!! -----------------------------------------------------------------------------^^^^^^^^^^^------------------ !!!
 # !!! Vietoje o365mokykla įrašykite savo mokyklos Office 365 aplinkos ID, kurį parodo Get-MsolAccountSku komanda !!!
 
@@ -354,9 +352,7 @@ $NaujosMokytojuPaskyros | foreach { Add-DistributionGroupMember -Identity $Grupe
 #------------------------------------------------------------------------------------------------------------------
 
 # Atrinkti mokinių paskyras pagal paskyroms priskirtą licenciją iš Office 365 aplinkos
-$DabartinisMokiniuSarasas = Get-MsolUser -All | Where-Object {$_.Licenses.AccountSKUid -eq "o365mokykla3:STANDARDWOFFPACK_STUDENT"} 
-# !!! --------------------------------------------------------------------------------------^^^^^^^^^^^--------- !!!
-# !!! Vietoje o365mokykla įrašykite savo mokyklos Office 365 aplinkos ID, kurį parodo Get-MsolAccountSku komanda !!!
+$DabartinisMokiniuSarasas = Get-MsolUser -All | Where-Object {$_.Licenses.AccountSKUid -like "*STANDARDWOFFPACK_FACULTY*"} 
 
 # Eksportuoti atrinktų mokinių paskyrų informaciją į CSV failą
 $DabartinisMokiniuSarasas | Select UserPrincipalName, DisplayName, FirstName, LastName, Title, Department, City, Office | Export-CSV $Pradinis_mokiniu_paskyru_failas -Encoding UTF8
@@ -375,7 +371,7 @@ $DabartinisMokiniuSarasas | Select UserPrincipalName, DisplayName, FirstName, La
 #   2. Kortelėje "Data" pasirinkite komandą "From Text/CSV".
 #
 #   3. Parinkite PowerShell skripto sukurtą CSV failą, kurio pavadinimas yra nurodytas skripto kintamajame 
-#      $Pradinis_mokiniu_paskyru_failas (xx eilutė), ir nuspauskite mygtuką "Import".
+#      $Pradinis_mokiniu_paskyru_failas (174 skripto eilutėje), ir nuspauskite mygtuką "Import".
 #
 #   4. Atsidariusiame dialogo lange nuspauskite mygtuką "Transform data".
 #
@@ -395,7 +391,7 @@ $DabartinisMokiniuSarasas | Select UserPrincipalName, DisplayName, FirstName, La
 #   10. "Power Query Editor" lange nuspauskite mygtuką "Close & Load".
 #
 #   11. Išsaugokite failą darbalaukyje vardu, kurį nurodėte atnaujintų paskyrų failo kintamajame
-#       $Atnaujintas_mokiniu_paskyru_failas (xx eilutėje), parinkdami failo tipą "CSV UTF-8 (Comma delimited)".
+#       $Atnaujintas_mokiniu_paskyru_failas (177 skripto eilutėje), parinkdami failo tipą "CSV UTF-8 (Comma delimited)".
 #       Atsidariusiame dialogo lange nuspauskite mygtuką "OK", kad būtų išsaugotas tik aktyvus lapas.
 #
 #   12. Search/Replace vaiksmais pervadinkite alumnais vyriausių klasių mokinių pareigas ir jų klasės informaciją.
@@ -404,10 +400,11 @@ $DabartinisMokiniuSarasas | Select UserPrincipalName, DisplayName, FirstName, La
 #       stulpelį "UserPrincipalName".
 #
 #   14. Visoms mokinių paskyroms stulpelyje "Office" įrašykite naujuosius mokslo metus, kurie yra įrašyti skripto
-#       kintamajame $Naujieji_mokslo_metai (xx eilutėje).
+#       kintamajame $Naujieji_mokslo_metai (159 skripto eilutėje).
 #
 #   15. Paskyroms tų mokinių, kurie nebesimokys mokykloje naujaisiais mokslo metais, "Office" stulpelyje mokslo
-#       metus pakeiskite į praėjusius, kurie įrašyti skripto kintamajame $Ankstesnieji_mokslo_metai.
+#       metus pakeiskite į praėjusius, kurie įrašyti skripto kintamajame $Ankstesnieji_mokslo_metai (156 skripto
+#       eilutėje).
 #
 #   16. Išsaugokite CSV faile atliktus pakeitimus.
 
@@ -450,7 +447,7 @@ $AtnaujintasMokiniuSarasas | foreach {if ($_.Office -ne $Naujieji_mokslo_metai -
 # Įvykdžius kodą turi būti rodomi mokinių sąrašo duomenys trijuose stulpeliuose. Jeigu duomenys matosi viename 
 # stulpelyje, CSV faile skyrybos ženklą kablelį pakeiskite kabliataškiu arba atvirkščiai. Stulpelių pavadinimai
 # turi būti "Pavardė", "Vardas" ir "Klasės/grupės pavadinimas", bet jų eilės tvarka nėra svarbi. Pataisykite CSV
-# failą, jeigu stulpelių pavadinimai yra kiti. Pakoregavę CSV failą, grįžkite prie skripto xxx-xxx eilučių CSV 
+# failą, jeigu stulpelių pavadinimai yra kiti. Pakoregavę CSV failą, grįžkite prie skripto 452-453 eilučių CSV 
 # failui patikrinti.
 $NaujuMokiniuSarasas = Import-Csv $Nauju_mokiniu_saraso_failas -Encoding UTF8
 $NaujuMokiniuSarasas | ft
@@ -495,7 +492,7 @@ foreach ($NaujasMokinys in $NaujuMokiniuSarasas) {
     If ($EsamasVartotojas -eq $Null) {
 		New-MsolUser -UserPrincipalName $NewUserPrincipalName -DisplayName $NewDisplayName -FirstName $NewFirstName -LastName $NewLastName -Title $NewTitle -Department $NewDepartment -Office $NewOffice -PreferredLanguage "lt-LT" -UsageLocation "LT" -ForceChangePassword:$true
         $Slaptazodis = Set-MsolUserPassword -UserPrincipalName $NewUserPrincipalName -ForceChangePassword:$true
-        Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "o365mokykla3:STANDARDWOFFPACK_STUDENT"
+        Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "o365mokykla:STANDARDWOFFPACK_STUDENT"
 # !!! -----------------------------------------------------------------------------^^^^^^^^^^^------------------ !!!
 # !!! Vietoje o365mokykla įrašykite savo mokyklos Office 365 aplinkos ID, kurį parodo Get-MsolAccountSku komanda !!!
 
@@ -553,7 +550,7 @@ Get-DistributionGroup -ResultSize unlimited -Filter "RecipientTypeDetails -eq 'M
 #   2. Kortelėje "Data" pasirinkite komandą "From Text/CSV".
 #
 #   3. Parinkite PowerShell skripto sukurtą CSV failą, kurio pavadinimas yra nurodytas skripto kintamajame 
-#      $Pradinis_grupių_paskyru_failas (xxx eilutė), ir nuspauskite mygtuką "Import".
+#      $Pradinis_grupių_paskyru_failas (186 skripto eilutėje), ir nuspauskite mygtuką "Import".
 #
 #   4. Atsidariusiame dialogo lange nuspauskite mygtuką "Transform data".
 #
@@ -573,7 +570,7 @@ Get-DistributionGroup -ResultSize unlimited -Filter "RecipientTypeDetails -eq 'M
 #   10. "Power Query Editor" lange nuspauskite mygtuką "Close & Load".
 #
 #   11. Išsaugokite failą darbalaukyje vardu, kurį nurodėte atnaujintų paskyrų failo kintamajame
-#       $Atnaujintas_mokiniu_paskyru_failas (xx eilutėje), parinkdami failo tipą "CSV UTF-8 (Comma delimited)".
+#       $Atnaujintas_grupiu_paskyru_failas (189 skripto eilutėje), parinkdami failo tipą "CSV UTF-8 (Comma delimited)".
 #       Atsidariusiame dialogo lange nuspauskite mygtuką "OK", kad būtų išsaugotas tik aktyvus lapas.
 #
 #   12. Search/Replace vaiksmais pervadinkite alumnais vyriausių klasių grupes, pavyzdžiui, 13a klasę.
