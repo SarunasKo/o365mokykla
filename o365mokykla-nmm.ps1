@@ -56,7 +56,7 @@
 
 #------------------------------------------------------------------------------------------------------------------
 #
-# Žingsnis 0: parengti PowerShell aplinką Office 365 paslaugų valdymui.
+# Žingsnis 00: parengti PowerShell aplinką Office 365 paslaugų valdymui.
 #
 # Šiuos veiksmus kompiuteryje reikia atlikti vieną kartą prieš naudojant skriptą. Jeigu jūsų kompiuteryje 
 # PowerShell jau buvo naudojamas Office 365 aplinkos valdymui anksčiau, tikėtina, kad šie veiksmai jau buvo
@@ -77,7 +77,7 @@ Set-ExecutionPolicy RemoteSigned
 
 #------------------------------------------------------------------------------------------------------------------
 #
-# Žingsnis 1: PowerShell aplinkoje prisijungti prie Office 365 paslaugų naudojant visuotinio administratoriaus
+# Žingsnis 01: PowerShell aplinkoje prisijungti prie Office 365 paslaugų naudojant visuotinio administratoriaus
 # teises turinčią paskyrą.
 #
 # Šiuos veiksmus reikia atlikti kiekvieną kartą, kai atidarote PowerShell skriptą ir norite vykdyti komandas,
@@ -98,12 +98,12 @@ $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri ht
 Import-PSSession $Session -DisableNameChecking
 
 # Aktyviu katalogu nustatyti darbalaukį, kad jame būtų galima patogiai rasti ir saugoti CSV failus
-Set-Location -Path $Env:USERPROFILE\OneDrive\Desktop
+Set-Location -Path $Env:USERPROFILE\Desktop
 
 
 #------------------------------------------------------------------------------------------------------------------
 #
-# Žingsnis 2: peržiūrėti turimas licencijas, rasti savo Office 365 aplinkos identifikatorių ir jį įrašyti šio
+# Žingsnis 02: peržiūrėti turimas licencijas, rasti savo Office 365 aplinkos identifikatorių ir jį įrašyti šio
 # skripto kode eilutėse 313 ir 494.
 #
 # Šį veiksmą reikia atlikti vieną kartą, pritaikant skriptą savo mokyklos Office 365 aplinkai.
@@ -132,7 +132,7 @@ Get-MsolAccountSku
 
 #------------------------------------------------------------------------------------------------------------------
 #
-# Žingsnis 3: pritaikyti skriptą naujiems mokslo metams.
+# Žingsnis 03: pritaikyti skriptą naujiems mokslo metams.
 #
 # Kintamųjų reikšmes reikės modifikuoti kiekvieną kartą ruošiant Office 365 aplinką naujiems mokslo metams.
 # Šio žingsnio kodą reikės įvykdyti kiekvieną kartą, kai norėsite naudotis skriptu. 
@@ -191,7 +191,7 @@ $Atnaujintas_grupiu_saraso_failas    = ".\o365mokykla_2020-2021_grupes_atnaujint
 
 #------------------------------------------------------------------------------------------------------------------
 #
-# Žingsnis 4: eksportuoti informaciją apie dabartines mokytojų paskyras iš Office 365 aplinkos į CSV failą.
+# Žingsnis 04: eksportuoti informaciją apie dabartines mokytojų paskyras iš Office 365 aplinkos į CSV failą.
 #
 #------------------------------------------------------------------------------------------------------------------
 
@@ -204,7 +204,7 @@ $DabartinisMokytojuSarasas | Select UserPrincipalName, DisplayName, FirstName, L
 
 #------------------------------------------------------------------------------------------------------------------
 #
-# Žingsnis 5: eksportuotą mokytojų paskyrų informaciją tvarkyti ir atnaujinti Excel programoje.
+# Žingsnis 05: eksportuotą mokytojų paskyrų informaciją tvarkyti ir atnaujinti Excel programoje.
 #
 #------------------------------------------------------------------------------------------------------------------
 
@@ -235,7 +235,7 @@ $DabartinisMokytojuSarasas | Select UserPrincipalName, DisplayName, FirstName, L
 
 #------------------------------------------------------------------------------------------------------------------
 #
-# Žingsnis 6: importuoti atnaujintų mokytojų paskyrų informaciją iš CVS failo į Office 365 aplinką.
+# Žingsnis 06: importuoti atnaujintų mokytojų paskyrų informaciją iš CVS failo į Office 365 aplinką.
 #
 #------------------------------------------------------------------------------------------------------------------
 
@@ -248,7 +248,7 @@ $AtnaujintasMokytojuSarasas | foreach { Set-MsolUser -UserPrincipalName $_.UserP
 
 #------------------------------------------------------------------------------------------------------------------
 #
-# Žingsnis 7: Office 365 aplinkoje blokuoti prisijungimą tų mokytojų paskyroms, kurioms "Office" stulpelyje nėra
+# Žingsnis 07: Office 365 aplinkoje blokuoti prisijungimą tų mokytojų paskyroms, kurioms "Office" stulpelyje nėra
 # nurodyti naujieji mokslo metai.
 #
 #------------------------------------------------------------------------------------------------------------------
@@ -263,7 +263,7 @@ $AtnaujintasMokytojuSarasas | foreach {if ($_.Office -ne $Naujieji_mokslo_metai 
 
 #------------------------------------------------------------------------------------------------------------------
 #
-# Žingsnis 8: Sukurti paskyras naujiems mokytojams
+# Žingsnis 08: Sukurti paskyras naujiems mokytojams
 #
 #------------------------------------------------------------------------------------------------------------------
 
@@ -439,7 +439,7 @@ $AtnaujintasMokiniuSarasas | foreach {if ($_.Office -ne $Naujieji_mokslo_metai -
 
 #------------------------------------------------------------------------------------------------------------------
 #
-# Žingsnis 13: Sukurti paskyras naujiems mokiniams
+# Žingsnis 13: sukurti paskyras naujiems mokiniams
 #
 #------------------------------------------------------------------------------------------------------------------
 
@@ -624,7 +624,7 @@ foreach ($NaujaKlase in $NaujuKlasiuSarasas) {
 
 # Įtraukti mokinių paskyras į klasių saugos grupes (CSV)
 $NaujosMokiniuPaskyros = Import-Csv $Nauju_mokiniu_paskyru_failas -Encoding UTF8
-$NaujuKlasiuSarasas = Import-Csv $Nauju_mokiniu_paskyru_failas -Encoding UTF8 | select Klasė | Where-Object { $_.Klasė -NotLike "*grupė" -and $_.Klasė.Length -gt 0 } | Sort-Object Klasė -Unique
+$NaujuKlasiuSarasas = Import-Csv $Nauju_mokiniu_paskyru_failas -Encoding UTF8 | select Klasė | Where-Object { $_.Klasė -match '\d{1}\w' -or $_.Klasė -match '\d{1}\w' } | Sort-Object Klasė -Unique
 foreach ($NaujaKlase in $NaujuKlasiuSarasas) {
     $KlasesPilnasPavadinimas = $NaujaKlase.Klasė + " klasė"
     $KlasesTrumpasPavadinimas = "visa." + $KlasesPilnasPavadinimas.Substring(0, $KlasesPilnasPavadinimas.IndexOf(" "))
