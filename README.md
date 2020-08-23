@@ -26,8 +26,8 @@ PowerShell skriptas, skirtas sukurti pradinę Office 365 aplinką mokyklai, kuri
   - o365mokykla_2019-2020_mokytojai_paskyros.csv - pavyzdinis sukurtų mokytojų paskyrų CSV failas;
   - o365mokykla_2019-2020_mokiniai.csv - pavyzdinis mokinių sąrašo CSV failas;
   - o365mokykla_2019-2020_mokiniai_paskyros.csv - pavyzdinis sukurtų mokinių paskyrų CSV failas;
-  - o365mokykla_2020-2021_mokytojai_nauji.csv - pavyzdinis naujų mokytojų sąrašo CSV failas, naudojamas atnaujinant Office 365 aplinkos duoemnis naujiems mokslo metams;
-  - o365mokykla_2020-2021_mokiniai_nauji.csv - pavyzdinis naujų mokinių sąrašo CSV failas, naudojamas atnaujinant Office 365 aplinkos duoemnis naujiems mokslo metams;
+  - o365mokykla_2020-2021_mokytojai_nauji.csv - pavyzdinis naujų mokytojų sąrašo CSV failas, naudojamas atnaujinant Office 365 aplinkos duoemenis naujiems mokslo metams;
+  - o365mokykla_2020-2021_mokiniai_nauji.csv - pavyzdinis naujų mokinių sąrašo CSV failas, naudojamas atnaujinant Office 365 aplinkos duoemenis naujiems mokslo metams;
   - o365mokykla_PowerQuery_mokiniai.txt - Power Query užklausa mokinių paskyrų duomenų atnaujinimui Excel programoje;
   - o365mokykla_PowerQuery_grupes.txt - Power Query užklausa grupių paskyrų duomenų atnaujinimui Excel programoje;
   - o365mokykla_00_Kaip-parengti-Office-365-naudojimui-mokykloje.pptx - PowerPoint pateiktis apie Office 365 aplinkos parengimo eigą;
