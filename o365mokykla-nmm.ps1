@@ -30,10 +30,10 @@
 #    Sarunas Koncius
 #
 # VERSION:
-# 	 0.9.2 20200823
+# 	 0.9.3 20200825
 #
 # MODIFIED:
-#	 2020-08-23
+#	 2020-08-25
 #
 #------------------------------------------------------------------------------------------------------------------
 
@@ -199,7 +199,7 @@ $Atnaujintas_grupiu_saraso_failas    = ".\o365mokykla_2020-2021_grupes_atnaujint
 $DabartinisMokytojuSarasas = Get-MsolUser -All | Where-Object { $_.Licenses.AccountSKUid -like "*STANDARDWOFFPACK_FACULTY*" }
 
 # Eksportuoti atrinktų mokytojų paskyrų informaciją į CSV failą
-$DabartinisMokytojuSarasas | Select UserPrincipalName, DisplayName, FirstName, LastName, Title, Department, City, Office | Export-CSV $Pradinis_mokytoju_paskyru_failas -Encoding UTF8
+$DabartinisMokytojuSarasas | Select UserPrincipalName, DisplayName, FirstName, LastName, Title, Department, City, Office | Export-CSV $Pradinis_mokytoju_paskyru_failas -Encoding UTF8 -Delimiter ";"
 
 
 #------------------------------------------------------------------------------------------------------------------
@@ -240,7 +240,7 @@ $DabartinisMokytojuSarasas | Select UserPrincipalName, DisplayName, FirstName, L
 #------------------------------------------------------------------------------------------------------------------
 
 # Nuskaityti atnaujintų mokytojų paskyrų informaciją iš CVS failo
-$AtnaujintasMokytojuSarasas = Import-Csv $Atnaujintas_mokytoju_paskyru_failas -Encoding UTF8
+$AtnaujintasMokytojuSarasas = Import-Csv $Atnaujintas_mokytoju_paskyru_failas -Encoding UTF8 -Delimiter ";"
 
 # Atnaujintą informaciją įrašyti į mokytojų paskyras, esančias Office 365 aplinkoje
 $AtnaujintasMokytojuSarasas | foreach { Set-MsolUser -UserPrincipalName $_.UserPrincipalName -DisplayName $_.DisplayName -FirstName $_.FirstName -LastName $_.LastName -Title $_.Title -Department $_.Department -City $_.City -Office $_.Office }
@@ -254,7 +254,7 @@ $AtnaujintasMokytojuSarasas | foreach { Set-MsolUser -UserPrincipalName $_.UserP
 #------------------------------------------------------------------------------------------------------------------
 
 # Nuskaityti atnaujintų mokytojų paskyrų informaciją iš CVS failo
-$AtnaujintasMokytojuSarasas = Import-Csv $Atnaujintas_mokytoju_paskyru_failas -Encoding UTF8
+$AtnaujintasMokytojuSarasas = Import-Csv $Atnaujintas_mokytoju_paskyru_failas -Encoding UTF8 -Delimiter ";"
 
 # Blokuoti prisijungimą tų mokytojų paskyroms, kurioms "Office" stulpelyje nėra nurodyti naujieji mokslo metai ir
 # vartotojo paskyra neturi jai priskirtos administratoriaus rolės.
@@ -272,7 +272,7 @@ $AtnaujintasMokytojuSarasas | foreach {if ($_.Office -ne $Naujieji_mokslo_metai 
 # stulpelyje, CSV faile skyrybos ženklą kablelį pakeiskite kabliataškiu arba atvirkščiai. Stulpelių pavadinimai
 # turi būti "Pavardė", "Vardas" ir "Pareigos", bet jų eilės tvarka nėra svarbi. Pataisykite CSV failą, jeigu
 # stulpelių pavadinimai yra kiti. Pakoregavę CSV failą, grįžkite prie 275 skripto eilutės CSV failui patikrinti.
-$NaujuMokytojuSarasas = Import-Csv $Nauju_mokytoju_saraso_failas -Encoding UTF8
+$NaujuMokytojuSarasas = Import-Csv $Nauju_mokytoju_saraso_failas -Encoding UTF8 -Delimiter ";"
 $NaujuMokytojuSarasas | ft
 
 # Sukurti naujas mokytojų paskyras, naudojant informaciją iš naujų mokytojo sąrašo ir formuojant CSV failą su
@@ -281,8 +281,8 @@ function Remove-StringNonLatinCharacters {
     PARAM ([string]$String)
     [Text.Encoding]::ASCII.GetString([Text.Encoding]::GetEncoding("Cyrillic").GetBytes($String))
 }
-Out-File -FilePath $Nauju_mokytoju_paskyru_failas -InputObject "Mokytojas,VartotojoID,Slaptažodis" -Encoding UTF8
-$NaujuMokytojuSarasas = Import-Csv $Nauju_mokytoju_saraso_failas -Encoding UTF8
+Out-File -FilePath $Nauju_mokytoju_paskyru_failas -InputObject "Mokytojas;VartotojoID;Slaptažodis" -Encoding UTF8
+$NaujuMokytojuSarasas = Import-Csv $Nauju_mokytoju_saraso_failas -Encoding UTF8 -Delimiter ";"
 $Licencijos = Get-MsolAccountSku
 foreach ($Licencija in $Licencijos) {
     if ($Licencija.AccountSkuId -like "*STANDARDWOFFPACK_FACULTY*") { $YraO365Licenciju = $Licencija.ActiveUnits - $Licencija.ConsumedUnits }
@@ -310,7 +310,7 @@ foreach ($NaujasMokytojas in $NaujuMokytojuSarasas) {
     If ($EsamasVartotojas -eq $Null) {
 		New-MsolUser -UserPrincipalName $NewUserPrincipalName -DisplayName $NewDisplayName -FirstName $NewFirstName -LastName $NewLastName -Title $NewTitle -Office $NewOffice -PreferredLanguage "lt-LT" -UsageLocation "LT" -ForceChangePassword:$true
         $Slaptazodis = Set-MsolUserPassword -UserPrincipalName $NewUserPrincipalName -ForceChangePassword:$true
-        Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "o365mokykla:STANDARDWOFFPACK_FACULTY"
+        Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "o365mokykla3:STANDARDWOFFPACK_FACULTY"
 # !!! -----------------------------------------------------------------------------^^^^^^^^^^^------------------ !!!
 # !!! Vietoje o365mokykla įrašykite savo mokyklos Office 365 aplinkos ID, kurį parodo Get-MsolAccountSku komanda !!!
 
@@ -319,14 +319,14 @@ foreach ($NaujasMokytojas in $NaujuMokytojuSarasas) {
     }
     $Mokytojas = $NewFirstName + " " + $NewLastName
     $VartotojoID = $NewUserPrincipalName
-	$PrisijungimoInformacija = "$Mokytojas,$VartotojoID,$Slaptazodis"
+	$PrisijungimoInformacija = "$Mokytojas;$VartotojoID;$Slaptazodis"
     Out-File -FilePath $Nauju_mokytoju_paskyru_failas -InputObject $PrisijungimoInformacija -Encoding UTF8 -append
 }
 
 # Nustatyti lietuviškus Office 365 aplinkos ir e. pašto dėžutės parametrus naujoms mokytojų paskyroms. 
 # Prieš vykdant šį kodo bloką, Office 365 administratoriaus portale įsitikinkite, kad paskutinėms sukurtoms naujų
 # mokytojų paskyroms jau yra sukurtos e.pašto dėžutės.
-$NaujosMokytojuPaskyros = Import-Csv $Nauju_mokytoju_paskyru_failas -Encoding UTF8
+$NaujosMokytojuPaskyros = Import-Csv $Nauju_mokytoju_paskyru_failas -Encoding UTF8 -Delimiter ";"
 $Skaitliukas = 1
 foreach ($NaujaMokytojoPaskyra In $NaujosMokytojuPaskyros) {
 	$Upn = $NaujaMokytojoPaskyra.VartotojoID
@@ -341,7 +341,7 @@ foreach ($NaujaMokytojoPaskyra In $NaujosMokytojuPaskyros) {
 }
 
 # Įtraukti naujų mokytojų paskyras į saugos grupę "Visi mokytojai"
-$NaujosMokytojuPaskyros = Import-Csv $Nauju_mokytoju_paskyru_failas -Encoding UTF8
+$NaujosMokytojuPaskyros = Import-Csv $Nauju_mokytoju_paskyru_failas -Encoding UTF8 -Delimiter ";"
 $NaujosMokytojuPaskyros | foreach { Add-DistributionGroupMember -Identity $GrupesVisiMokytojaiSmtpAdresas -Member $_.VartotojoID -Confirm:$false -BypassSecurityGroupManagerCheck }
 
 
@@ -355,7 +355,7 @@ $NaujosMokytojuPaskyros | foreach { Add-DistributionGroupMember -Identity $Grupe
 $DabartinisMokiniuSarasas = Get-MsolUser -All | Where-Object {$_.Licenses.AccountSKUid -like "*STANDARDWOFFPACK_FACULTY*"} 
 
 # Eksportuoti atrinktų mokinių paskyrų informaciją į CSV failą
-$DabartinisMokiniuSarasas | Select UserPrincipalName, DisplayName, FirstName, LastName, Title, Department, City, Office | Export-CSV $Pradinis_mokiniu_paskyru_failas -Encoding UTF8
+$DabartinisMokiniuSarasas | Select UserPrincipalName, DisplayName, FirstName, LastName, Title, Department, City, Office | Export-CSV $Pradinis_mokiniu_paskyru_failas -Encoding UTF8 -Delimiter ";"
 
 
 #------------------------------------------------------------------------------------------------------------------
@@ -416,7 +416,7 @@ $DabartinisMokiniuSarasas | Select UserPrincipalName, DisplayName, FirstName, La
 #------------------------------------------------------------------------------------------------------------------
 
 # Nuskaityti atnaujintų mokinių paskyrų informaciją iš CVS failo
-$AtnaujintasMokiniuSarasas = Import-Csv $Atnaujintas_mokiniu_paskyru_failas -Encoding UTF8
+$AtnaujintasMokiniuSarasas = Import-Csv $Atnaujintas_mokiniu_paskyru_failas -Encoding UTF8 -Delimiter ";"
 
 # Atnaujintą informaciją įrašyti į mokinių paskyras, esančias Office 365 aplinkoje
 $AtnaujintasMokiniuSarasas | foreach { Set-MsolUser -UserPrincipalName $_.UserPrincipalName -DisplayName $_.DisplayName -FirstName $_.FirstName -LastName $_.LastName -Title $_.Title -Department $_.Department -City $_.City -Office $_.Office }
@@ -430,7 +430,7 @@ $AtnaujintasMokiniuSarasas | foreach { Set-MsolUser -UserPrincipalName $_.UserPr
 #------------------------------------------------------------------------------------------------------------------
 
 # Nuskaityti atnaujintų mokinių paskyrų informaciją iš CVS failo
-$AtnaujintasMokiniuSarasas = Import-Csv $Atnaujintas_mokiniu_paskyru_failas -Encoding UTF8
+$AtnaujintasMokiniuSarasas = Import-Csv $Atnaujintas_mokiniu_paskyru_failas -Encoding UTF8 -Delimiter ";"
 
 # Blokuoti prisijungimą tų mokinių paskyroms, kurioms "Office" stulpelyje nėra nurodyti naujieji mokslo metai ir
 # vartotojo paskyra neturi jai priskirtos administratoriaus rolės.
@@ -449,7 +449,7 @@ $AtnaujintasMokiniuSarasas | foreach {if ($_.Office -ne $Naujieji_mokslo_metai -
 # turi būti "Pavardė", "Vardas" ir "Klasės/grupės pavadinimas", bet jų eilės tvarka nėra svarbi. Pataisykite CSV
 # failą, jeigu stulpelių pavadinimai yra kiti. Pakoregavę CSV failą, grįžkite prie skripto 452-453 eilučių CSV 
 # failui patikrinti.
-$NaujuMokiniuSarasas = Import-Csv $Nauju_mokiniu_saraso_failas -Encoding UTF8
+$NaujuMokiniuSarasas = Import-Csv $Nauju_mokiniu_saraso_failas -Encoding UTF8 -Delimiter ";"
 $NaujuMokiniuSarasas | ft
 
 # Sukurti naujas mokiniu paskyras, naudojant informaciją iš naujų mokiniu sąrašo ir formuojant CSV failą su
@@ -459,7 +459,7 @@ function Remove-StringNonLatinCharacters {
     [Text.Encoding]::ASCII.GetString([Text.Encoding]::GetEncoding("Cyrillic").GetBytes($String))
 }
 Out-File -FilePath $Nauju_mokiniu_paskyru_failas -InputObject "Klasė,Mokinys,VartotojoID,Slaptažodis" -Encoding UTF8
-$NaujuMokiniuSarasas = Import-Csv $Nauju_mokiniu_saraso_failas -Encoding UTF8
+$NaujuMokiniuSarasas = Import-Csv $Nauju_mokiniu_saraso_failas -Encoding UTF8 -Delimiter ";"
 $Licencijos = Get-MsolAccountSku
 foreach ($Licencija in $Licencijos) {
     if ($Licencija.AccountSkuId -like "*STANDARDWOFFPACK_STUDENT*") { $YraO365Licenciju = $Licencija.ActiveUnits - $Licencija.ConsumedUnits }
@@ -492,7 +492,7 @@ foreach ($NaujasMokinys in $NaujuMokiniuSarasas) {
     If ($EsamasVartotojas -eq $Null) {
 		New-MsolUser -UserPrincipalName $NewUserPrincipalName -DisplayName $NewDisplayName -FirstName $NewFirstName -LastName $NewLastName -Title $NewTitle -Department $NewDepartment -Office $NewOffice -PreferredLanguage "lt-LT" -UsageLocation "LT" -ForceChangePassword:$true
         $Slaptazodis = Set-MsolUserPassword -UserPrincipalName $NewUserPrincipalName -ForceChangePassword:$true
-        Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "o365mokykla:STANDARDWOFFPACK_STUDENT"
+        Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "o365mokykla3:STANDARDWOFFPACK_STUDENT"
 # !!! -----------------------------------------------------------------------------^^^^^^^^^^^------------------ !!!
 # !!! Vietoje o365mokykla įrašykite savo mokyklos Office 365 aplinkos ID, kurį parodo Get-MsolAccountSku komanda !!!
 
@@ -509,7 +509,7 @@ foreach ($NaujasMokinys in $NaujuMokiniuSarasas) {
 # Nustatyti lietuviškus Office 365 aplinkos ir e. pašto dėžutės parametrus naujoms mokinių paskyroms. 
 # Prieš vykdant šį kodo bloką, Office 365 administratoriaus portale įsitikinkite, kad paskutinėms sukurtoms naujų
 # mokinių paskyroms jau yra sukurtos e.pašto dėžutės.
-$NaujosMokiniuPaskyros = Import-Csv $Nauju_mokiniu_paskyru_failas -Encoding UTF8
+$NaujosMokiniuPaskyros = Import-Csv $Nauju_mokiniu_paskyru_failas -Encoding UTF8 -Delimiter ";"
 $Skaitliukas = 1
 foreach ($NaujaMokinioPaskyra In $NaujosMokiniuPaskyros) {
 	$Upn = $NaujaMokinioPaskyra.VartotojoID
@@ -534,7 +534,7 @@ foreach ($NaujaMokinioPaskyra In $NaujosMokiniuPaskyros) {
 # Išrinkti saugos grupių su įgalintu e. paštu paskyras ir eksportuoti informaciją apie jas į CSV failą
 Get-DistributionGroup -ResultSize unlimited -Filter "RecipientTypeDetails -eq 'MailUniversalSecurityGroup'" |
     Select-Object Guid, Identity, Id, Name, DisplayName, Alias, EmailAddresses, PrimarySmtpAddress, WindowsEmailAddress |
-    Export-Csv $Pradinis_grupiu_saraso_failas -Encoding UTF8
+    Export-Csv $Pradinis_grupiu_saraso_failas -Encoding UTF8 -Delimiter ";"
 
 
 #------------------------------------------------------------------------------------------------------------------
@@ -590,7 +590,7 @@ Get-DistributionGroup -ResultSize unlimited -Filter "RecipientTypeDetails -eq 'M
 #------------------------------------------------------------------------------------------------------------------
 
 # Nuskaityti atnaujintų mokinių paskyrų informaciją iš CVS failo
-$AtnaujintosGrupes = Import-Csv $Atnaujintas_grupiu_saraso_failas -Encoding UTF8
+$AtnaujintosGrupes = Import-Csv $Atnaujintas_grupiu_saraso_failas -Encoding UTF8 -Delimiter ";"
 
 # Atnaujintą informaciją įrašyti į grupių paskyras, esančias Office 365 aplinkoje
 $AtnaujintosGrupes |
@@ -604,7 +604,7 @@ $AtnaujintosGrupes |
 #------------------------------------------------------------------------------------------------------------------
 
 # Sukurti saugos grupes naujoms klasėms
-$NaujuKlasiuSarasas = Import-Csv $Nauju_mokiniu_paskyru_failas -Encoding UTF8 | select Klasė | Where-Object { $_.Klasė -NotLike "*grupė" -and $_.Klasė.Length -gt 0 } | Sort-Object Klasė -Unique
+$NaujuKlasiuSarasas = Import-Csv $Nauju_mokiniu_paskyru_failas -Encoding UTF8 -Delimiter ";" | select Klasė | Where-Object { $_.Klasė -NotLike "*grupė" -and $_.Klasė.Length -gt 0 } | Sort-Object Klasė -Unique
 foreach ($NaujaKlase in $NaujuKlasiuSarasas) { 
     $KlasesPilnasPavadinimas = "Visa " + $NaujaKlase.Klasė + " klasė"
     if ($NaujaKlase.Klasė.IndexOf(" ") -ne -1) { $KlasesTrumpasPavadinimas = "visa." + $NaujaKlase.Klasė.Substring(0, $NaujaKlase.Klasė.IndexOf(" ")) } else { $KlasesTrumpasPavadinimas = "visa." + $NaujaKlase.Klasė }
@@ -623,8 +623,8 @@ foreach ($NaujaKlase in $NaujuKlasiuSarasas) {
 #------------------------------------------------------------------------------------------------------------------
 
 # Įtraukti mokinių paskyras į klasių saugos grupes (CSV)
-$NaujosMokiniuPaskyros = Import-Csv $Nauju_mokiniu_paskyru_failas -Encoding UTF8
-$NaujuKlasiuSarasas = Import-Csv $Nauju_mokiniu_paskyru_failas -Encoding UTF8 | select Klasė | Where-Object { $_.Klasė -match '\d{1}\w' -or $_.Klasė -match '\d{1}\w' } | Sort-Object Klasė -Unique
+$NaujosMokiniuPaskyros = Import-Csv $Nauju_mokiniu_paskyru_failas -Encoding UTF8 -Delimiter ";"
+$NaujuKlasiuSarasas = Import-Csv $Nauju_mokiniu_paskyru_failas -Encoding UTF8 -Delimiter ";" | select Klasė | Where-Object { $_.Klasė -match '\d{1}\w' -or $_.Klasė -match '\d{1}\w' } | Sort-Object Klasė -Unique
 foreach ($NaujaKlase in $NaujuKlasiuSarasas) {
     $KlasesPilnasPavadinimas = $NaujaKlase.Klasė + " klasė"
     $KlasesTrumpasPavadinimas = "visa." + $KlasesPilnasPavadinimas.Substring(0, $KlasesPilnasPavadinimas.IndexOf(" "))
