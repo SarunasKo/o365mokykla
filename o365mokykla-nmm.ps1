@@ -310,7 +310,7 @@ foreach ($NaujasMokytojas in $NaujuMokytojuSarasas) {
     If ($EsamasVartotojas -eq $Null) {
 		New-MsolUser -UserPrincipalName $NewUserPrincipalName -DisplayName $NewDisplayName -FirstName $NewFirstName -LastName $NewLastName -Title $NewTitle -Office $NewOffice -PreferredLanguage "lt-LT" -UsageLocation "LT" -ForceChangePassword:$true
         $Slaptazodis = Set-MsolUserPassword -UserPrincipalName $NewUserPrincipalName -ForceChangePassword:$true
-        Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "o365mokykla3:STANDARDWOFFPACK_FACULTY"
+        Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "o365mokykla:STANDARDWOFFPACK_FACULTY"
 # !!! -----------------------------------------------------------------------------^^^^^^^^^^^------------------ !!!
 # !!! Vietoje o365mokykla įrašykite savo mokyklos Office 365 aplinkos ID, kurį parodo Get-MsolAccountSku komanda !!!
 
@@ -352,7 +352,7 @@ $NaujosMokytojuPaskyros | foreach { Add-DistributionGroupMember -Identity $Grupe
 #------------------------------------------------------------------------------------------------------------------
 
 # Atrinkti mokinių paskyras pagal paskyroms priskirtą licenciją iš Office 365 aplinkos
-$DabartinisMokiniuSarasas = Get-MsolUser -All | Where-Object {$_.Licenses.AccountSKUid -like "*STANDARDWOFFPACK_FACULTY*"} 
+$DabartinisMokiniuSarasas = Get-MsolUser -All | Where-Object {$_.Licenses.AccountSKUid -like "*STANDARDWOFFPACK_STUDENT*"} 
 
 # Eksportuoti atrinktų mokinių paskyrų informaciją į CSV failą
 $DabartinisMokiniuSarasas | Select UserPrincipalName, DisplayName, FirstName, LastName, Title, Department, City, Office | Export-CSV $Pradinis_mokiniu_paskyru_failas -Encoding UTF8 -Delimiter ";"
@@ -492,7 +492,7 @@ foreach ($NaujasMokinys in $NaujuMokiniuSarasas) {
     If ($EsamasVartotojas -eq $Null) {
 		New-MsolUser -UserPrincipalName $NewUserPrincipalName -DisplayName $NewDisplayName -FirstName $NewFirstName -LastName $NewLastName -Title $NewTitle -Department $NewDepartment -Office $NewOffice -PreferredLanguage "lt-LT" -UsageLocation "LT" -ForceChangePassword:$true
         $Slaptazodis = Set-MsolUserPassword -UserPrincipalName $NewUserPrincipalName -ForceChangePassword:$true
-        Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "o365mokykla3:STANDARDWOFFPACK_STUDENT"
+        Set-MsolUserLicense -UserPrincipalName $NewUserPrincipalName -AddLicenses "o365mokykla:STANDARDWOFFPACK_STUDENT"
 # !!! -----------------------------------------------------------------------------^^^^^^^^^^^------------------ !!!
 # !!! Vietoje o365mokykla įrašykite savo mokyklos Office 365 aplinkos ID, kurį parodo Get-MsolAccountSku komanda !!!
 
