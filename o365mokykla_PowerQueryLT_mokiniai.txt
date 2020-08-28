@@ -1,0 +1,25 @@
+let
+    Šaltinis = Csv.Document(File.Contents("C:\Users\o365admin\Desktop\o365mokykla_2020-2021_mokiniai_pradinis.csv"),[Delimiter=";", Columns=8, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+    #"Pakeistas tipas" = Table.TransformColumnTypes(Šaltinis,{{"Column1", type text}, {"Column2", type text}, {"Column3", type text}, {"Column4", type text}, {"Column5", type text}, {"Column6", type text}, {"Column7", type text}, {"Column8", type text}}),
+    #"Pašalintos viršutinės eilutės" = Table.Skip(#"Pakeistas tipas",1),
+    #"Į aukštesnį lygį perkeltos antraštės" = Table.PromoteHeaders(#"Pašalintos viršutinės eilutės", [PromoteAllScalars=true]),
+    #"Pakeistas tipas1" = Table.TransformColumnTypes(#"Į aukštesnį lygį perkeltos antraštės",{{"UserPrincipalName", type text}, {"DisplayName", type text}, {"FirstName", type text}, {"LastName", type text}, {"Title", type text}, {"Department", type text}, {"City", type text}, {"Office", type text}}),
+    #"Pakeista reikšmė" = Table.ReplaceValue(#"Pakeistas tipas1","12","13",Replacer.ReplaceText,{"Title", "Department"}),
+    #"Pakeista reikšmė1" = Table.ReplaceValue(#"Pakeista reikšmė","11","12",Replacer.ReplaceText,{"Title", "Department"}),
+    #"Pakeista reikšmė2" = Table.ReplaceValue(#"Pakeista reikšmė1","10","11",Replacer.ReplaceText,{"Title", "Department"}),
+    #"Pakeista reikšmė3" = Table.ReplaceValue(#"Pakeista reikšmė2","9","10",Replacer.ReplaceText,{"Title", "Department"}),
+    #"Pakeista reikšmė4" = Table.ReplaceValue(#"Pakeista reikšmė3","8","9",Replacer.ReplaceText,{"Title", "Department"}),
+    #"Pakeista reikšmė5" = Table.ReplaceValue(#"Pakeista reikšmė4","7","8",Replacer.ReplaceText,{"Title", "Department"}),
+    #"Pakeista reikšmė6" = Table.ReplaceValue(#"Pakeista reikšmė5","6","7",Replacer.ReplaceText,{"Title", "Department"}),
+    #"Pakeista reikšmė7" = Table.ReplaceValue(#"Pakeista reikšmė6","5","6",Replacer.ReplaceText,{"Title", "Department"}),
+    #"Pakeista reikšmė8" = Table.ReplaceValue(#"Pakeista reikšmė7","4","5",Replacer.ReplaceText,{"Title", "Department"}),
+    #"Pakeista reikšmė9" = Table.ReplaceValue(#"Pakeista reikšmė8","3","4",Replacer.ReplaceText,{"Title", "Department"}),
+    #"Pakeista reikšmė10" = Table.ReplaceValue(#"Pakeista reikšmė9","2","3",Replacer.ReplaceText,{"Title", "Department"}),
+    #"Pakeista reikšmė11" = Table.ReplaceValue(#"Pakeista reikšmė10","1","2",Replacer.ReplaceText,{"Title", "Department"}),
+    #"Pakeista reikšmė12" = Table.ReplaceValue(#"Pakeista reikšmė11","IV","V",Replacer.ReplaceText,{"Title", "Department"}),
+    #"Pakeista reikšmė13" = Table.ReplaceValue(#"Pakeista reikšmė12","III","IV",Replacer.ReplaceText,{"Title", "Department"}),
+    #"Pakeista reikšmė14" = Table.ReplaceValue(#"Pakeista reikšmė13","II","III",Replacer.ReplaceText,{"Title", "Department"}),
+    #"Pakeista reikšmė15" = Table.ReplaceValue(#"Pakeista reikšmė14","I","II",Replacer.ReplaceText,{"Title", "Department"}),
+    #"Surikiuotos eilutės" = Table.Sort(#"Pakeista reikšmė15",{{"Department", Order.Descending}, {"LastName", Order.Ascending}})
+in
+    #"Surikiuotos eilutės"
