@@ -30,10 +30,10 @@
 #    Sarunas Koncius
 #
 # VERSION:
-# 	 0.9.4 20200826
+# 	 0.9.5 20200828
 #
 # MODIFIED:
-#	 2020-08-26
+#	 2020-08-28
 #
 #------------------------------------------------------------------------------------------------------------------
 
@@ -368,27 +368,27 @@ $DabartinisMokiniuSarasas | Select UserPrincipalName, DisplayName, FirstName, La
 #
 #   1. Startuokite "Excel" programą ir pradėkite darbą nuo naujo tuščio dokumento.
 #
-#   2. Kortelėje "Data" pasirinkite komandą "From Text/CSV".
+#   2. Kortelėje "Duomenys" ("Data") pasirinkite komandą "Iš teksto/CSV" ("From Text/CSV").
 #
 #   3. Parinkite PowerShell skripto sukurtą CSV failą, kurio pavadinimas yra nurodytas skripto kintamajame 
-#      $Pradinis_mokiniu_paskyru_failas (174 skripto eilutėje), ir nuspauskite mygtuką "Import".
+#      $Pradinis_mokiniu_paskyru_failas (174 skripto eilutėje), ir nuspauskite mygtuką "Importuoti" ("Import").
 #
-#   4. Atsidariusiame dialogo lange nuspauskite mygtuką "Transform data".
+#   4. Atsidariusiame dialogo lange nuspauskite mygtuką "Transformuoti duomenis" ("Transform data").
 #
-#   5. Atsidariusiame "Power Query Editor" lange nuspauskite mygtuką "Advanced Editor".
+#   5. Atsidariusiame "Power Query" lange nuspauskite mygtuką "Išplėstinė rengyklė" ("Advanced Editor").
 #
-#   6. Jeigu "Advanced Editor" lange rodomas tekstas neturi eilučių numerių, įjunkite eilučių numerių rodymą 
-#      pasirinkę meniu "Display Options" ir komandą "Display line numbers".
+#   6. Jeigu "Iplėstinė rengyklė" ("Advanced Editor") lange rodomas tekstas neturi eilučių numerių, įjunkite eilučių numerių rodymą 
+#      pasirinkę meniu "Rodymo parinkty" ("Display Options") ir komandą "Rodyti eilučių numerius" ("Display line numbers").
 #
-#   7. Pažymėkite "Advanced Editor" lange esantį tekstą nuo trečios iki paskutinės eilutės imtinai ir jį ištrinkite.  
+#   7. Pažymėkite "Iplėstinė rengyklė" ("Advanced Editor") lange esantį tekstą nuo trečios iki paskutinės eilutės imtinai ir jį ištrinkite.  
 #
-#   8. Atidarykite darbalaukyje esantį failą o365mokykla_PowerQuery_mokiniai.txt, pažymėkite jame esantį tekstą
-#      nuo trečios iki paskutinės eilutės imtinai ir jį nukopijuokite.
+#   8. Atidarykite darbalaukyje esantį failą o365mokykla_PowerQueryLT_mokiniai.txt arba o365mokykla_PowerQueryEN_mokiniai.txt,
+#      pažymėkite jame esantį tekstą nuo trečios iki paskutinės eilutės imtinai ir jį nukopijuokite.
 #
-#   9. Sugrįžkite į "Advanced Editor" langą, pastatykite kursorių trečioje eilutėje, įkelkite nukopijuotą tekstą 
-#      ir nuspauskite mygtuką "Done". 
+#   9. Sugrįžkite į "Iplėstinė rengyklė" ("Advanced Editor") langą, pastatykite kursorių trečioje eilutėje,
+#      įkelkite nukopijuotą tekstą ir nuspauskite mygtuką "Atlikta" ("Done"). 
 #
-#   10. "Power Query Editor" lange nuspauskite mygtuką "Close & Load".
+#   10. "Power Query" lange nuspauskite mygtuką "Uždaryti ir įkelti" ("Close & Load").
 #
 #   11. Išsaugokite failą darbalaukyje vardu, kurį nurodėte atnaujintų paskyrų failo kintamajame
 #       $Atnaujintas_mokiniu_paskyru_failas (177 skripto eilutėje), parinkdami failo tipą "CSV UTF-8 (Comma delimited)".
@@ -458,7 +458,7 @@ function Remove-StringNonLatinCharacters {
     PARAM ([string]$String)
     [Text.Encoding]::ASCII.GetString([Text.Encoding]::GetEncoding("Cyrillic").GetBytes($String))
 }
-Out-File -FilePath $Nauju_mokiniu_paskyru_failas -InputObject "Klasė,Mokinys,VartotojoID,Slaptažodis" -Encoding UTF8
+Out-File -FilePath $Nauju_mokiniu_paskyru_failas -InputObject "Klasė;Mokinys;VartotojoID;Slaptažodis" -Encoding UTF8
 $NaujuMokiniuSarasas = Import-Csv $Nauju_mokiniu_saraso_failas -Encoding UTF8 -Delimiter ";"
 $Licencijos = Get-MsolAccountSku
 foreach ($Licencija in $Licencijos) {
@@ -502,7 +502,7 @@ foreach ($NaujasMokinys in $NaujuMokiniuSarasas) {
     $Klase = $NaujasMokinys."Klasės/grupės pavadinimas".ToLower()
     $Mokinys = $NewFirstName + " " + $NewLastName
     $VartotojoID = $NewUserPrincipalName
-	$PrisijungimoInformacija = "$Klase,$Mokinys,$VartotojoID,$Slaptazodis"
+	$PrisijungimoInformacija = "$Klase;$Mokinys;$VartotojoID;$Slaptazodis"
     Out-File -FilePath $Nauju_mokiniu_paskyru_failas -InputObject $PrisijungimoInformacija -Encoding UTF8 -append
 }
 
