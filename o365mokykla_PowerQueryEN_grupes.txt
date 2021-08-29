@@ -1,5 +1,5 @@
 let
-    Source = Csv.Document(File.Contents("C:\Users\sarun\OneDrive\Desktop\o365mokykla_2020-2021_grupes_pradinis.csv"),[Delimiter=",", Columns=9, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+    Source = Csv.Document(File.Contents("C:\Users\o365admin\Desktop\o365mokykla_2020-2021_grupes_pradinis.csv"),[Delimiter=",", Columns=9, Encoding=65001, QuoteStyle=QuoteStyle.None]),
     #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}, {"Column2", type text}, {"Column3", type text}, {"Column4", type text}, {"Column5", type text}, {"Column6", type text}, {"Column7", type text}, {"Column8", type text}, {"Column9", type text}}),
     #"Removed Top Rows" = Table.Skip(#"Changed Type",1),
     #"Promoted Headers" = Table.PromoteHeaders(#"Removed Top Rows", [PromoteAllScalars=true]),

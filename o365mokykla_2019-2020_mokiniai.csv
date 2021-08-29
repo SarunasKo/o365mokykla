@@ -1,5 +1,17 @@
-﻿Pavardė,Vardas,Klasės/grupės pavadinimas
-MOKINYS,PIRMASIS,4z
-MOKINĖ,ANTROJI,1z
-MOKINYS,TREČIASIS DAUGIAVARDIS,3z
-DAUGIAPAVARDĖ MOKINĖ,KETVIRTOJI,2z
+﻿Vardas;Pavardė;Klasės/grupės pavadinimas
+Egidijus;Pirmaitis;1a
+Verena;Pirmokaitė;1a
+Burvilė;Pirminaitė;1b
+Gytautas Daugiavardis;Pirmickas;1b
+Protenis;Dvipavardis Antraitis;2a
+Ingrida Dvivardė;Daugiapavardė Antrokaitė;2a
+Vilgaudė;Antrinaitė;2b
+Steponas;Antrūnas;2b
+Berta;Trečiokaitė;3a
+Grigalius;Trečiaitis;3a
+Sirtautas;Tretickas;3b
+Mirga;Tretminaitė;3b
+Girstautas;Ketvirtaitis;4a
+Germina;Ketvirtokaitė;4a
+Germantas;Ketvirtickas;4b
+Rozalija;Ketvirtinaitė;4b
