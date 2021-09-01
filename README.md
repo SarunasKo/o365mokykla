@@ -7,6 +7,12 @@
   - eksportuoja esamas saugos grupių su įgalintu e. paštu paskyras į CSV failą, kad jas būtų galima atnaujinti naudojant Excel programą;
   - importuoja atnaujintą saugos grupių paskyrų informaciją iš CSV failo į Office 365 aplinką.
  
+**Skripto naudojimo video:**
+ - Pirmoji pamoka - pasirengimas naudoti skriptą https://vimeo.com/451203331
+ - Antroji pamoka - mokytojų paskyrų atnaujinimas https://vimeo.com/451635747
+ - Trečioji pamoka - mokinių paskyrų atnaujinimas https://vimeo.com/452388976
+ - Ketvirtoji pamoka - grupių paskyrų atnaujinimas https://vimeo.com/596095738
+ 
 # o365mokykla.ps1
 PowerShell skriptas, skirtas sukurti pradinę Office 365 aplinką mokyklai, kuri pradeda naudotis šiomis paslaugomis:
  - sukuria mokytojų paskyras iš CSV failo, kuris gali būti sukuriamas eksportavus duomenis iš Excel failo;
